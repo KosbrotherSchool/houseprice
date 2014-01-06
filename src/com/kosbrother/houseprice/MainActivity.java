@@ -23,6 +23,8 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.kosbrother.houseprice.fragment.BreiefFragment;
 import com.kosbrother.houseprice.fragment.BreifMonthFragment;
 import com.kosbrother.houseprice.fragment.DetailFragment;
+import com.kosbrother.houseprice.fragment.MonthSquarePriceFragment;
+import com.kosbrother.houseprice.fragment.MonthTotalPriceFragment;
 import com.kosbrother.houseprice.fragment.TransparentSupportMapFragment;
 import com.kosbrother.houseprice.utils.TabManager;
 
@@ -85,9 +87,9 @@ public class MainActivity extends SherlockFragmentActivity
 		mTabManager = new TabManager(this, mTabHost, R.id.realtabcontent);
 
 		mTabManager.addTab(mTabHost.newTabSpec("simple").setIndicator("單價"),
-				BreifMonthFragment.class, null);
+				MonthSquarePriceFragment.class, null);
 		mTabManager.addTab(mTabHost.newTabSpec("contacts").setIndicator("總價"),
-				DetailFragment.class, null);
+				MonthTotalPriceFragment.class, null);
 
 		if (savedInstanceState != null)
 		{
