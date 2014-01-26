@@ -1,6 +1,7 @@
 package com.kosbrother.houseprice;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -20,9 +21,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.GoogleMap.OnMapLoadedCallback;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.kosbrother.houseprice.api.HouseApi;
 import com.kosbrother.houseprice.fragment.BreiefFragment;
-import com.kosbrother.houseprice.fragment.BreifMonthFragment;
-import com.kosbrother.houseprice.fragment.DetailFragment;
 import com.kosbrother.houseprice.fragment.MonthSquarePriceFragment;
 import com.kosbrother.houseprice.fragment.MonthTotalPriceFragment;
 import com.kosbrother.houseprice.fragment.TransparentSupportMapFragment;
@@ -41,12 +41,18 @@ public class MainActivity extends SherlockFragmentActivity
 
 	private Button btnList;
 	
+	private double km_dis = 0.1;
+	private double center_x = 121.715593;
+	private double center_y = 25.121541;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		
+		new GetEstatesTask().execute();
 		
 		mLayoutDataChange = (LinearLayout) findViewById(R.id.layout_data_change);
 		mLayoutDataChange.setOnClickListener(new OnClickListener()
@@ -222,6 +228,39 @@ public class MainActivity extends SherlockFragmentActivity
 			return theBreiefFragments[position];
 		}
 		
+	}
+	
+	
+	protected class GetEstatesTask extends AsyncTask<Void, Void, Void>
+	{
+
+		@Override
+		protected void onPreExecute()
+		{
+			super.onPreExecute();
+		}
+
+		@Override
+		protected Void doInBackground(Void... Void)
+		{
+			try
+			{
+				Datas.mEstates.clear();
+			} catch (Exception e)
+			{
+				// TODO: handle exception
+			}
+			
+			Datas.mEstates = HouseApi.getAroundAllByAreas(km_dis, center_x, center_y);
+
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(Void result)
+		{
+			
+		}
 	}
 
 }
