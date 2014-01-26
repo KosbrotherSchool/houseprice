@@ -13,9 +13,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.kosbrother.houseprice.entity.RealEstate;
-
 import android.util.Log;
+
+import com.kosbrother.houseprice.entity.RealEstate;
 
 public class HouseApi
 {

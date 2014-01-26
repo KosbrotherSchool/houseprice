@@ -1,12 +1,12 @@
 package com.kosbrother.houseprice.fragment;
 
-import com.kosbrother.houseprice.R;
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.kosbrother.houseprice.R;
 
 public class MonthSquarePriceFragment extends Fragment		
 {
