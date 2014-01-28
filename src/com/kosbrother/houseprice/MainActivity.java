@@ -59,7 +59,7 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 
 	private Button btnList;
 	private TextView textYearMonth;
-	
+
 	private double km_dis = 0.5;
 	private double center_x;
 	private double center_y;
@@ -68,10 +68,6 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 
 	private int crawlDateNum = 10211;
 
-	
-	
-	
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -111,32 +107,44 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 				theBreiefFragment.addDetailViews();
 			}
 		});
-		
+
 		textYearMonth = (TextView) findViewById(R.id.text_year_month);
-		
+
 		mAdapter = new MyAdapter(getSupportFragmentManager());
 		mPager = (ViewPager) findViewById(R.id.pager);
 		mPager.setAdapter(mAdapter);
 		mPager.setOnPageChangeListener(new OnPageChangeListener()
 		{
-			
+
 			@Override
 			public void onPageSelected(int position)
-			{	
-				String dataString = Datas.mArrayKey.get(position).substring(0, 3) + "/" + Datas.mArrayKey.get(position).substring(3);
-				textYearMonth.setText(dataString);
+			{
+				try
+				{
+					String dataString = Datas.mArrayKey.get(position).substring(0, 3) + "/"
+							+ Datas.mArrayKey.get(position).substring(3);
+					textYearMonth.setText(dataString);
+					
+					BreiefFragment theBreiefFragment = mAdapter.getCurrBreiefFragment(mPager
+							.getCurrentItem());
+					theBreiefFragment.setBriefViews();
+				} catch (Exception e)
+				{
+					// TODO: handle exception
+				}
+				
 			}
-			
+
 			@Override
 			public void onPageScrolled(int arg0, float arg1, int arg2)
 			{
-				
+
 			}
-			
+
 			@Override
 			public void onPageScrollStateChanged(int arg0)
 			{
-				
+
 			}
 		});
 
@@ -293,7 +301,7 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 				for (int i = 0; i < 4; i++)
 				{
 					int monthKey = month - i;
-					Datas.mArrayKey.add(Integer.toString(year * 100+monthKey));
+					Datas.mArrayKey.add(Integer.toString(year * 100 + monthKey));
 				}
 			} else
 			{
@@ -339,7 +347,7 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 		@Override
 		protected void onPostExecute(Void result)
 		{
-//			 mGoogleMap.clear();
+			// mGoogleMap.clear();
 			if (Datas.mEstates != null && Datas.mEstates.size() != 0)
 			{
 				for (int i = 0; i < Datas.mEstates.size(); i++)
@@ -351,15 +359,14 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 					marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_sale));
 					mGoogleMap.addMarker(marker);
 
-				}
+				}				
 
-//				BreiefFragment theBreiefFragment = mAdapter.getCurrBreiefFragment(mPager
-//						.getCurrentItem());
-//				theBreiefFragment.addDetailViews();
-				
 				Datas.mEstatesMap = getRealEstatesMap(Datas.mEstates);
 				
-				
+				BreiefFragment theBreiefFragment = mAdapter.getCurrBreiefFragment(mPager
+						.getCurrentItem());
+				theBreiefFragment.setBriefViews();
+
 			} else
 			{
 				Toast.makeText(MainActivity.this, "No Data!!", Toast.LENGTH_SHORT).show();
@@ -550,15 +557,16 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 		// mConnectionState.setText(R.string.location_updates_stopped);
 	}
 
-	private TreeMap<String, ArrayList<RealEstate>> getRealEstatesMap(ArrayList<RealEstate> realEstates)
+	private TreeMap<String, ArrayList<RealEstate>> getRealEstatesMap(
+			ArrayList<RealEstate> realEstates)
 	{
-		
-		
+
 		TreeMap<String, ArrayList<RealEstate>> estateMap = new TreeMap<String, ArrayList<RealEstate>>();
 		for (int i = 0; i < realEstates.size(); i++)
 		{
 			RealEstate realEstate = realEstates.get(i);
-			String realEstateKey = Integer.toString(realEstate.exchange_year*100+realEstate.exchange_month);
+			String realEstateKey = Integer.toString(realEstate.exchange_year * 100
+					+ realEstate.exchange_month);
 			// 先確認key是否存在
 			if (estateMap.containsKey(realEstateKey))
 			{

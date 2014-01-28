@@ -27,6 +27,10 @@ public class BreiefFragment extends Fragment
 	private View layoutDetailView;
 	private int mPosition;
 	
+	private TextView textEstateItemNums;
+	private TextView textEstateSquarePrice;
+	private TextView textSquarePriceChange;
+	
 	// private static BreiefFragment mBreiefFragment;
 
 	public static BreiefFragment newInstance(int position)
@@ -45,7 +49,11 @@ public class BreiefFragment extends Fragment
 		View v = inflater.inflate(R.layout.fragment_breief, null);
 		layoutBrief = (LinearLayout) v.findViewById(R.id.layout_breif);
 		layoutDetailView = v.findViewById(R.id.layout_detail);
-
+		
+		textEstateItemNums = (TextView) v.findViewById(R.id.text_estate_item_num);
+		textEstateSquarePrice = (TextView) v.findViewById(R.id.text_estate_square_price);
+		textSquarePriceChange = (TextView) v.findViewById(R.id.text_square_price_change);
+		
 		detailTableLayout = (TableLayout) v.findViewById(R.id.detail_talble);
 		Bundle bundle = getArguments();
 		mPosition = bundle.getInt("num");
@@ -131,7 +139,67 @@ public class BreiefFragment extends Fragment
 
 		}
 	}
-
+	
+	public void setBriefViews(){
+		//	get data, and last month data
+		ArrayList<RealEstate>  theEstates = new ArrayList<RealEstate>();
+		theEstates = Datas.mEstatesMap.get(Datas.mArrayKey.get(mPosition));
+		
+		textEstateItemNums.setText(Integer.toString(theEstates.size()) + "筆");
+		
+		double sumSquarePrice = 0;
+		for (int i = 0; i < theEstates.size(); i++)
+		{
+			sumSquarePrice = sumSquarePrice + theEstates.get(i).square_price;
+		}
+		double avgSquarePrice = sumSquarePrice / theEstates.size();
+		String avgSquarePriceString = Double.toString(avgSquarePrice);
+		if (avgSquarePriceString.indexOf(".")!=-1)
+		{
+			textEstateSquarePrice.setText(avgSquarePriceString.substring(0, avgSquarePriceString.indexOf(".")+2) + "萬");
+		}else {
+			textEstateSquarePrice.setText(avgSquarePriceString + "萬");
+		}
+		
+		
+		try
+		{
+			ArrayList<RealEstate>  lastEstates = new ArrayList<RealEstate>();
+			lastEstates = Datas.mEstatesMap.get(Datas.mArrayKey.get(mPosition+1));
+			double sumLastSquarePrice = 0;
+			for (int i = 0; i < lastEstates.size(); i++)
+			{
+				sumLastSquarePrice = sumLastSquarePrice + lastEstates.get(i).square_price;
+			}
+			double avgLastSquarePrice = sumLastSquarePrice / lastEstates.size();
+			double percentChange =  avgSquarePrice / avgLastSquarePrice;
+			if (percentChange > 1){
+				percentChange = (percentChange -1)*100;
+				String percentString = Double.toString(percentChange);
+				if (percentString.indexOf(".")!=-1){
+					textSquarePriceChange.setText("漲"+percentString.substring(0, percentString.indexOf(".")+2)+"%");
+				}else {
+					textSquarePriceChange.setText("漲"+percentString+"%");
+				}
+			}else {
+				percentChange = (1 - percentChange)*100;
+				String percentString = Double.toString(percentChange);
+				if (percentString.indexOf(".")!=-1){
+					textSquarePriceChange.setText("跌"+percentString.substring(0, percentString.indexOf(".")+2)+"%");
+				}else {
+					textSquarePriceChange.setText("跌"+percentString+"%");
+				}
+			}
+			
+			
+		} catch (Exception e)
+		{
+			textSquarePriceChange.setText(" ~ " + "%");
+		}
+		
+		
+	}
+	
 	// public static BreiefFragment getBreiefFragment(){
 	// return mBreiefFragment;
 	// }

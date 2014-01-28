@@ -24,11 +24,13 @@
                 android:text="附近類似房屋" />
 
             <TextView
+                android:id="@+id/text_estate_item_num"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:text="30筆"
-                android:textSize="30dp" />
+                android:textSize="30dp"
+                 />
         </LinearLayout>
 
         <LinearLayout
@@ -43,6 +45,7 @@
                 android:text="平均成交價" />
 
             <TextView
+                android:id="@+id/text_estate_square_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
@@ -62,6 +65,7 @@
                 android:text="月漲跌" />
 
             <TextView
+                android:id="@+id/text_square_price_change"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
