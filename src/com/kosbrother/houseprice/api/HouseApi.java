@@ -41,6 +41,35 @@ public class HouseApi
 		}
 	}
 
+	public static int getCurrentCrawlDate()
+	{
+		String message = getMessageFromServer("GET", "/api/v1/estate/get_current_crawl_data", null,
+				null);
+		if (message == null)
+		{
+			return 0;
+		} else
+		{
+			return parseDateMessage(message);
+		}
+	}
+
+	private static int parseDateMessage(String message)
+	{
+		try
+		{
+//			JSONArray jArray;
+//			jArray = new JSONArray(message.toString());
+			JSONObject jsonObject = new JSONObject(message.toString());
+			int year = jsonObject.getInt("crawl_year");
+			int month = jsonObject.getInt("crawl_month");
+			return year * 100 + month;			
+		}catch(Exception e){
+			return 0;
+		}
+		
+	}
+
 	private static ArrayList<RealEstate> parseEstateMessage(String message,
 			ArrayList<RealEstate> realEstates)
 	{
@@ -123,14 +152,15 @@ public class HouseApi
 					// TODO: handle exception
 				}
 
-//				String estate_address = "";
-//				try
-//				{
-//					estate_address = jArray.getJSONObject(i).getString("address");
-//				} catch (Exception e)
-//				{
-//					// TODO: handle exception
-//				}
+				// String estate_address = "";
+				// try
+				// {
+				// estate_address =
+				// jArray.getJSONObject(i).getString("address");
+				// } catch (Exception e)
+				// {
+				// // TODO: handle exception
+				// }
 
 				double x_lat = jArray.getJSONObject(i).getDouble("x_long");
 				double y_long = jArray.getJSONObject(i).getDouble("y_lat");

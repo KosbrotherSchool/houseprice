@@ -1,5 +1,8 @@
 package com.kosbrother.houseprice;
 
+import java.util.ArrayList;
+import java.util.TreeMap;
+
 import android.app.Dialog;
 import android.content.Intent;
 import android.location.Location;
@@ -10,12 +13,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TabHost;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -32,6 +37,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.kosbrother.houseprice.api.HouseApi;
+import com.kosbrother.houseprice.entity.RealEstate;
 import com.kosbrother.houseprice.fragment.BreiefFragment;
 import com.kosbrother.houseprice.fragment.MonthSquarePriceFragment;
 import com.kosbrother.houseprice.fragment.MonthTotalPriceFragment;
@@ -52,18 +58,27 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 	private ViewPager mPager;
 
 	private Button btnList;
-
-	private double km_dis = 0.1;
+	private TextView textYearMonth;
+	
+	private double km_dis = 0.5;
 	private double center_x;
 	private double center_y;
 
 	private LocationClient mLocationClient;
 
+	private int crawlDateNum = 10211;
+
+	
+	
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
+		new GetCurrentDateTask().execute();
 
 		mLayoutDataChange = (LinearLayout) findViewById(R.id.layout_data_change);
 		mLayoutDataChange.setOnClickListener(new OnClickListener()
@@ -93,12 +108,37 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 				BreiefFragment theBreiefFragment = mAdapter.getCurrBreiefFragment(mPager
 						.getCurrentItem());
 				theBreiefFragment.changeDetailView();
+				theBreiefFragment.addDetailViews();
 			}
 		});
-
+		
+		textYearMonth = (TextView) findViewById(R.id.text_year_month);
+		
 		mAdapter = new MyAdapter(getSupportFragmentManager());
 		mPager = (ViewPager) findViewById(R.id.pager);
 		mPager.setAdapter(mAdapter);
+		mPager.setOnPageChangeListener(new OnPageChangeListener()
+		{
+			
+			@Override
+			public void onPageSelected(int position)
+			{	
+				String dataString = Datas.mArrayKey.get(position).substring(0, 3) + "/" + Datas.mArrayKey.get(position).substring(3);
+				textYearMonth.setText(dataString);
+			}
+			
+			@Override
+			public void onPageScrolled(int arg0, float arg1, int arg2)
+			{
+				
+			}
+			
+			@Override
+			public void onPageScrollStateChanged(int arg0)
+			{
+				
+			}
+		});
 
 		mTabHost = (TabHost) findViewById(android.R.id.tabhost);
 		mTabHost.setup();
@@ -210,7 +250,7 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 		@Override
 		public Fragment getItem(int position)
 		{
-			theBreiefFragments[position] = BreiefFragment.newInstance();
+			theBreiefFragments[position] = BreiefFragment.newInstance(position);
 			return theBreiefFragments[position];
 		}
 
@@ -219,6 +259,56 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 			return theBreiefFragments[position];
 		}
 
+	}
+
+	private class GetCurrentDateTask extends AsyncTask<Void, Void, Void>
+	{
+
+		@Override
+		protected Void doInBackground(Void... arg0)
+		{
+			// TODO Auto-generated method stub
+			crawlDateNum = HouseApi.getCurrentCrawlDate();
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(Void result)
+		{
+			// Toast.makeText(MainActivity.this, Integer.toString(crawlDateNum),
+			// Toast.LENGTH_SHORT).show();
+			makeArrayKey(crawlDateNum);
+		}
+
+		private void makeArrayKey(int crawlDateNum)
+		{
+			int year = crawlDateNum / 100;
+			int month = crawlDateNum % 100;
+			Toast.makeText(MainActivity.this,
+					Integer.toString(year) + "/" + Integer.toString(month), Toast.LENGTH_SHORT)
+					.show();
+
+			if (month > 4)
+			{
+				for (int i = 0; i < 4; i++)
+				{
+					int monthKey = month - i;
+					Datas.mArrayKey.add(Integer.toString(year * 100+monthKey));
+				}
+			} else
+			{
+				for (int i = 0; i < 4; i++)
+				{
+					int monthKey = (month + 12 - i) % 12;
+					if (monthKey == 0)
+					{
+						monthKey = 12;
+					}
+					Datas.mArrayKey.add(Integer.toString(year * 100 + monthKey));
+				}
+			}
+
+		}
 	}
 
 	protected class GetEstatesTask extends AsyncTask<Void, Void, Void>
@@ -249,7 +339,7 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 		@Override
 		protected void onPostExecute(Void result)
 		{
-			// mGoogleMap.clear();
+//			 mGoogleMap.clear();
 			if (Datas.mEstates != null && Datas.mEstates.size() != 0)
 			{
 				for (int i = 0; i < Datas.mEstates.size(); i++)
@@ -262,6 +352,14 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 					mGoogleMap.addMarker(marker);
 
 				}
+
+//				BreiefFragment theBreiefFragment = mAdapter.getCurrBreiefFragment(mPager
+//						.getCurrentItem());
+//				theBreiefFragment.addDetailViews();
+				
+				Datas.mEstatesMap = getRealEstatesMap(Datas.mEstates);
+				
+				
 			} else
 			{
 				Toast.makeText(MainActivity.this, "No Data!!", Toast.LENGTH_SHORT).show();
@@ -287,25 +385,33 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 				Constants.currentLatLng = new LatLng(25.0478, 121.5172);
 
 			}
-			
-			center_x = Constants.currentLatLng.longitude;
-			center_y = Constants.currentLatLng.latitude;
-			
-			
-			mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(
-					Constants.currentLatLng.latitude, Constants.currentLatLng.longitude), 16.0f));
+
+			// center_x = Constants.currentLatLng.longitude;
+			// center_y = Constants.currentLatLng.latitude;
+
+			// mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new
+			// LatLng(
+			// Constants.currentLatLng.latitude,
+			// Constants.currentLatLng.longitude), 16.0f));
+
+			// Taipei Train Station
+			center_x = 121.5172;
+			center_y = 25.0478;
+
+			mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(center_y, center_x),
+					16.0f));
 
 			new GetEstatesTask().execute();
 
-//			mGoogleMap.setOnCameraChangeListener(new OnCameraChangeListener()
-//			{
-//
-//				@Override
-//				public void onCameraChange(CameraPosition position)
-//				{
-//
-//				}
-//			});
+			// mGoogleMap.setOnCameraChangeListener(new OnCameraChangeListener()
+			// {
+			//
+			// @Override
+			// public void onCameraChange(CameraPosition position)
+			// {
+			//
+			// }
+			// });
 
 		}
 	}
@@ -442,5 +548,30 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 	{
 		mLocationClient.removeLocationUpdates(this);
 		// mConnectionState.setText(R.string.location_updates_stopped);
+	}
+
+	private TreeMap<String, ArrayList<RealEstate>> getRealEstatesMap(ArrayList<RealEstate> realEstates)
+	{
+		
+		
+		TreeMap<String, ArrayList<RealEstate>> estateMap = new TreeMap<String, ArrayList<RealEstate>>();
+		for (int i = 0; i < realEstates.size(); i++)
+		{
+			RealEstate realEstate = realEstates.get(i);
+			String realEstateKey = Integer.toString(realEstate.exchange_year*100+realEstate.exchange_month);
+			// 先確認key是否存在
+			if (estateMap.containsKey(realEstateKey))
+			{
+				// 已經有的話就把movie加進去
+				((ArrayList<RealEstate>) estateMap.get(realEstateKey)).add(realEstate);
+			} else
+			{
+				// 沒有的話就建一個加進去
+				ArrayList<RealEstate> newRealEstateList = new ArrayList<RealEstate>(10);
+				newRealEstateList.add(realEstate);
+				estateMap.put(realEstateKey, newRealEstateList);
+			}
+		}
+		return estateMap;
 	}
 }

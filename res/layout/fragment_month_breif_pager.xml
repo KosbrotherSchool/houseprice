@@ -41,7 +41,8 @@
             android:layout_weight="1"
             android:gravity="center" >
 
-            <TextView
+            <TextView 
+                android:id="@+id/text_year_month"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="102/11"
