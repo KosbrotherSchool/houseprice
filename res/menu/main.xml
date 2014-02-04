@@ -6,11 +6,11 @@
         android:showAsAction="always"
         android:title="篩選"/>
     
-    <item
+    <!-- <item
         android:id="@+id/menu_query_record"
         android:icon="@drawable/icon_storage"
         android:showAsAction="always"
-        android:title="查詢紀錄"/>
+        android:title="查詢紀錄"/> -->
     
     <item
         android:id="@+id/action_share"

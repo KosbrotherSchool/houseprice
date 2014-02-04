@@ -3,7 +3,9 @@ package com.kosbrother.houseprice;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -16,10 +18,13 @@ import android.support.v4.app.FragmentTabHost;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,7 +55,7 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 
 	private GoogleMap mGoogleMap;
 	private FragmentTabHost mTabHost;
-//	private TabManager mTabManager;
+	// private TabManager mTabManager;
 
 	private LinearLayout mLayoutDataChange;
 	private MyAdapter mAdapter;
@@ -58,6 +63,7 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 
 	private Button btnList;
 	private TextView textYearMonth;
+	private Button btnDistance;
 
 	private double km_dis = 0.5;
 	private double center_x;
@@ -86,10 +92,11 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 				{
 					mTabHost.setVisibility(View.GONE);
 				} else
-				{					
-					MonthSquarePriceFragment theMSP = (MonthSquarePriceFragment) getSupportFragmentManager().findFragmentByTag("simple");
+				{
+					MonthSquarePriceFragment theMSP = (MonthSquarePriceFragment) getSupportFragmentManager()
+							.findFragmentByTag("simple");
 					theMSP.setDatas();
-					mTabHost.setVisibility(View.VISIBLE);					
+					mTabHost.setVisibility(View.VISIBLE);
 				}
 			}
 		});
@@ -109,6 +116,19 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 			}
 		});
 
+		btnDistance = (Button) findViewById(R.id.button_distance);
+		btnDistance.setText(Double.toString(km_dis)+"km");
+		btnDistance.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public void onClick(View v)
+			{
+				// TODO Auto-generated method stub
+				showSelectDistanceDialog();
+			}
+		});
+
 		textYearMonth = (TextView) findViewById(R.id.text_year_month);
 
 		mAdapter = new MyAdapter(getSupportFragmentManager());
@@ -125,7 +145,7 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 					String dataString = Datas.mArrayKey.get(position).substring(0, 3) + "/"
 							+ Datas.mArrayKey.get(position).substring(3);
 					textYearMonth.setText(dataString);
-					
+
 					BreiefFragment theBreiefFragment = mAdapter.getCurrBreiefFragment(mPager
 							.getCurrentItem());
 					theBreiefFragment.setBriefViews();
@@ -133,7 +153,7 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 				{
 					// TODO: handle exception
 				}
-				
+
 			}
 
 			@Override
@@ -151,20 +171,22 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 
 		mTabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
 		mTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
-		mTabHost.addTab(mTabHost.newTabSpec("simple").setIndicator("單價"), MonthSquarePriceFragment.class, null);
-		mTabHost.addTab(mTabHost.newTabSpec("contacts").setIndicator("總價"), MonthTotalPriceFragment.class, null);
-		
-//		mTabManager = new TabManager(this, mTabHost, R.id.realtabcontent);
-//
-//		mTabManager.addTab(mTabHost.newTabSpec("simple").setIndicator("單價"),
-//				MonthSquarePriceFragment.class, null);
-//		mTabManager.addTab(mTabHost.newTabSpec("contacts").setIndicator("總價"),
-//				MonthTotalPriceFragment.class, null);
-//
-//		if (savedInstanceState != null)
-//		{
-//			mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
-//		}
+		mTabHost.addTab(mTabHost.newTabSpec("simple").setIndicator("單價"),
+				MonthSquarePriceFragment.class, null);
+		mTabHost.addTab(mTabHost.newTabSpec("contacts").setIndicator("總價"),
+				MonthTotalPriceFragment.class, null);
+
+		// mTabManager = new TabManager(this, mTabHost, R.id.realtabcontent);
+		//
+		// mTabManager.addTab(mTabHost.newTabSpec("simple").setIndicator("單價"),
+		// MonthSquarePriceFragment.class, null);
+		// mTabManager.addTab(mTabHost.newTabSpec("contacts").setIndicator("總價"),
+		// MonthTotalPriceFragment.class, null);
+		//
+		// if (savedInstanceState != null)
+		// {
+		// mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
+		// }
 
 		mLocationClient = new LocationClient(this, this, this);
 
@@ -223,14 +245,14 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 			intent.setClass(MainActivity.this, FilterActivity.class);
 			startActivity(intent);
 			break;
-		case R.id.menu_query_record:
-			// Toast.makeText(MainActivity.this, "list",
-			// Toast.LENGTH_SHORT).show();
-			// Intent intent = new Intent();
-			// intent.setClass(MainActivity.this, ListActivity.class);
-			// // intent.putExtras(bundle);
-			// startActivity(intent);
-			break;
+		// case R.id.menu_query_record:
+		// Toast.makeText(MainActivity.this, "list",
+		// Toast.LENGTH_SHORT).show();
+		// Intent intent = new Intent();
+		// intent.setClass(MainActivity.this, ListActivity.class);
+		// // intent.putExtras(bundle);
+		// startActivity(intent);
+		// break;
 		}
 
 		return super.onOptionsItemSelected(item);
@@ -362,10 +384,10 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 					marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_sale));
 					mGoogleMap.addMarker(marker);
 
-				}				
+				}
 
 				Datas.mEstatesMap = getRealEstatesMap(Datas.mEstates);
-				
+
 				BreiefFragment theBreiefFragment = mAdapter.getCurrBreiefFragment(mPager
 						.getCurrentItem());
 				theBreiefFragment.setBriefViews();
@@ -585,4 +607,70 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 		}
 		return estateMap;
 	}
+
+	private void showSelectDistanceDialog()
+	{
+		
+		AlertDialog.Builder editDialog = new AlertDialog.Builder(MainActivity.this);
+		editDialog.setTitle("選取搜索範圍");
+
+		// final EditText editText = new EditText(ArticleActivity.this);
+		// editDialog.setView(editText);
+
+		LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
+		View distance_view = inflater.inflate(R.layout.dialog_select_distance, null);
+		final TextView textDistance = (TextView) distance_view.findViewById(R.id.text_distance);
+		SeekBar seekBarDistance = (SeekBar) distance_view.findViewById(R.id.seekbar_distance);
+		
+		textDistance.setText(Double.toString(km_dis)+"km");
+		int pp = (int) (km_dis / 0.05);
+		seekBarDistance.setProgress(pp);
+		
+		seekBarDistance.setOnSeekBarChangeListener(new OnSeekBarChangeListener()
+		{
+			
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar)
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar)
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
+			{
+				// TODO Auto-generated method stub
+				double d = progress * 0.05;
+				String d_String = Double.toString(d).substring(0, 3);
+				textDistance.setText(d_String+"km");
+				km_dis = Double.valueOf(d_String);
+			}
+		});
+		
+		
+		editDialog.setView(distance_view);
+
+		editDialog.setPositiveButton("確定", new DialogInterface.OnClickListener()
+		{
+			public void onClick(DialogInterface arg0, int arg1)
+			{
+				btnDistance.setText(Double.toString(km_dis)+"km");
+			}
+		});
+		editDialog.setNegativeButton("取消", new DialogInterface.OnClickListener()
+		{
+			public void onClick(DialogInterface arg0, int arg1)
+			{
+			}
+		});
+		editDialog.show();
+	}
+
 }
