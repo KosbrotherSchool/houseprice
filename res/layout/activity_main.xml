@@ -30,9 +30,8 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
-                android:text="5km"
                 android:layout_marginLeft="10dp"
-                 />
+                android:text="5km" />
 
             <LinearLayout
                 android:id="@+id/searchTextLayout"
@@ -124,7 +123,7 @@
 
         <!-- tabhost for whole data -->
 
-        <TabHost
+        <android.support.v4.app.FragmentTabHost
             android:id="@android:id/tabhost"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
@@ -154,7 +153,7 @@
                     android:layout_height="0dp"
                     android:layout_weight="1" />
             </LinearLayout>
-        </TabHost>
+        </android.support.v4.app.FragmentTabHost>
     </LinearLayout>
 
 </LinearLayout>

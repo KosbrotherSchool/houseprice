@@ -1,4 +1,6 @@
 eclipse.preferences.version=1
+encoding//src/com/kosbrother/houseprice/Datas.java=UTF-8
 encoding//src/com/kosbrother/houseprice/MainActivity.java=UTF-8
 encoding//src/com/kosbrother/houseprice/api/InfoParserApi.java=UTF-8
 encoding//src/com/kosbrother/houseprice/fragment/BreiefFragment.java=UTF-8
+encoding//src/com/kosbrother/houseprice/fragment/MonthTotalPriceFragment.java=UTF-8

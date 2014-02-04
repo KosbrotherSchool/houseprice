@@ -12,6 +12,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentTabHost;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
@@ -19,7 +20,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,7 +42,6 @@ import com.kosbrother.houseprice.fragment.BreiefFragment;
 import com.kosbrother.houseprice.fragment.MonthSquarePriceFragment;
 import com.kosbrother.houseprice.fragment.MonthTotalPriceFragment;
 import com.kosbrother.houseprice.fragment.TransparentSupportMapFragment;
-import com.kosbrother.houseprice.utils.TabManager;
 
 public class MainActivity extends SherlockFragmentActivity implements LocationListener,
 		GooglePlayServicesClient.ConnectionCallbacks,
@@ -50,8 +49,8 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 {
 
 	private GoogleMap mGoogleMap;
-	private TabHost mTabHost;
-	private TabManager mTabManager;
+	private FragmentTabHost mTabHost;
+//	private TabManager mTabManager;
 
 	private LinearLayout mLayoutDataChange;
 	private MyAdapter mAdapter;
@@ -87,8 +86,10 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 				{
 					mTabHost.setVisibility(View.GONE);
 				} else
-				{
-					mTabHost.setVisibility(View.VISIBLE);
+				{					
+					MonthSquarePriceFragment theMSP = (MonthSquarePriceFragment) getSupportFragmentManager().findFragmentByTag("simple");
+					theMSP.setDatas();
+					mTabHost.setVisibility(View.VISIBLE);					
 				}
 			}
 		});
@@ -148,20 +149,22 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 			}
 		});
 
-		mTabHost = (TabHost) findViewById(android.R.id.tabhost);
-		mTabHost.setup();
-
-		mTabManager = new TabManager(this, mTabHost, R.id.realtabcontent);
-
-		mTabManager.addTab(mTabHost.newTabSpec("simple").setIndicator("單價"),
-				MonthSquarePriceFragment.class, null);
-		mTabManager.addTab(mTabHost.newTabSpec("contacts").setIndicator("總價"),
-				MonthTotalPriceFragment.class, null);
-
-		if (savedInstanceState != null)
-		{
-			mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
-		}
+		mTabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
+		mTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
+		mTabHost.addTab(mTabHost.newTabSpec("simple").setIndicator("單價"), MonthSquarePriceFragment.class, null);
+		mTabHost.addTab(mTabHost.newTabSpec("contacts").setIndicator("總價"), MonthTotalPriceFragment.class, null);
+		
+//		mTabManager = new TabManager(this, mTabHost, R.id.realtabcontent);
+//
+//		mTabManager.addTab(mTabHost.newTabSpec("simple").setIndicator("單價"),
+//				MonthSquarePriceFragment.class, null);
+//		mTabManager.addTab(mTabHost.newTabSpec("contacts").setIndicator("總價"),
+//				MonthTotalPriceFragment.class, null);
+//
+//		if (savedInstanceState != null)
+//		{
+//			mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
+//		}
 
 		mLocationClient = new LocationClient(this, this, this);
 

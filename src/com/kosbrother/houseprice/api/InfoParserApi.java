@@ -54,7 +54,7 @@ public class InfoParserApi
 		}
 		return buildType;
 	}
-	
+
 	public static String parseGroundType(int groundTypeId)
 	{
 		String buildType = "";
@@ -85,6 +85,44 @@ public class InfoParserApi
 
 		}
 		return buildType;
+	}
+
+	public static String parseMonthKey(String monthKey)
+	{
+		return monthKey.substring(0, 3) + "/" + monthKey.substring(3);
+	}
+
+	public static String parseSquarePrice(double sq_price)
+	{
+		String sqPriceString = Double.toString(sq_price);
+		if (sqPriceString.indexOf(".")!=-1)
+		{	
+			return sqPriceString.substring(0, sqPriceString.indexOf(".")+2) + "萬";
+		}else {
+			return sqPriceString + "萬";
+		}
+	}
+	
+	public static String parsePriceChangePercent(double percentChange){
+		if (percentChange > 1){
+			percentChange = (percentChange -1)*100;
+			String percentString = Double.toString(percentChange);
+			if (percentString.indexOf(".")!=-1){
+				return "漲"+percentString.substring(0, percentString.indexOf(".")+2)+"%";
+			}else {
+				return "漲"+percentString+"%";
+			}
+		}else if (0 < percentChange && percentChange< 1){
+			percentChange = (1 - percentChange)*100;
+			String percentString = Double.toString(percentChange);
+			if (percentString.indexOf(".")!=-1){
+				return "跌"+percentString.substring(0, percentString.indexOf(".")+2)+"%";
+			}else {
+				return "跌"+percentString+"%";
+			}
+		}else {
+			return " ~ " + "%";
+		}
 	}
 
 }

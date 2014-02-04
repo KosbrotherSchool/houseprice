@@ -142,17 +142,17 @@ public class BreiefFragment extends Fragment
 	
 	public void setBriefViews(){
 		//	get data, and last month data
-		ArrayList<RealEstate>  theEstates = new ArrayList<RealEstate>();
-		theEstates = Datas.mEstatesMap.get(Datas.mArrayKey.get(mPosition));
+//		ArrayList<RealEstate>  theEstates = new ArrayList<RealEstate>();
+//		theEstates = Datas.mEstatesMap.get(Datas.mArrayKey.get(mPosition));
 		
-		textEstateItemNums.setText(Integer.toString(theEstates.size()) + "筆");
+		String monthKey = Datas.mArrayKey.get(mPosition);
 		
-		double sumSquarePrice = 0;
-		for (int i = 0; i < theEstates.size(); i++)
-		{
-			sumSquarePrice = sumSquarePrice + theEstates.get(i).square_price;
-		}
-		double avgSquarePrice = sumSquarePrice / theEstates.size();
+		
+		int itemNums = Datas.getMonthEstatesNum(monthKey);
+		textEstateItemNums.setText(Integer.toString(itemNums) + "筆");
+		
+		
+		double avgSquarePrice = Datas.getMonthAvgSquarePrice(monthKey);
 		String avgSquarePriceString = Double.toString(avgSquarePrice);
 		if (avgSquarePriceString.indexOf(".")!=-1)
 		{
@@ -164,15 +164,8 @@ public class BreiefFragment extends Fragment
 		
 		try
 		{
-			ArrayList<RealEstate>  lastEstates = new ArrayList<RealEstate>();
-			lastEstates = Datas.mEstatesMap.get(Datas.mArrayKey.get(mPosition+1));
-			double sumLastSquarePrice = 0;
-			for (int i = 0; i < lastEstates.size(); i++)
-			{
-				sumLastSquarePrice = sumLastSquarePrice + lastEstates.get(i).square_price;
-			}
-			double avgLastSquarePrice = sumLastSquarePrice / lastEstates.size();
-			double percentChange =  avgSquarePrice / avgLastSquarePrice;
+			String lastMonthKey = Datas.mArrayKey.get(mPosition + 1);
+			double percentChange =  Datas.getSquarePriceChange(monthKey, lastMonthKey);
 			if (percentChange > 1){
 				percentChange = (percentChange -1)*100;
 				String percentString = Double.toString(percentChange);
