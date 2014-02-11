@@ -47,6 +47,7 @@ import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -269,8 +270,28 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 			double geoLat = address.getLatitude();
 			double geoLong = address.getLongitude();
 			Constants.currentLatLng = new LatLng(geoLat, geoLong);
+
+			float mapSize = 15.0f;
+
+			if (0 < km_dis && km_dis <= 0.3)
+			{
+				mapSize = 16.0f;
+			} else if (0.3 < km_dis && km_dis <= 0.5)
+			{
+				mapSize = 15.0f;
+			} else if (0.5 < km_dis && km_dis <= 1)
+			{
+				mapSize = 14.0f;
+			} else if (1 < km_dis && km_dis <= 2)
+			{
+				mapSize = 13.0f;
+			} else
+			{
+				mapSize = 12.0f;
+			}
+
 			mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(
-					Constants.currentLatLng.latitude, Constants.currentLatLng.longitude), 16.0f));
+					Constants.currentLatLng.latitude, Constants.currentLatLng.longitude), mapSize));
 			center_x = geoLong;
 			center_y = geoLat;
 			new GetEstatesTask().execute();
@@ -301,7 +322,21 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 		{
 			mGoogleMap = ((TransparentSupportMapFragment) getSupportFragmentManager()
 					.findFragmentById(R.id.map)).getMap();
-
+			
+			mGoogleMap.setMyLocationEnabled(true);
+			
+			mGoogleMap.setOnMyLocationButtonClickListener( new OnMyLocationButtonClickListener()
+			{
+				
+				@Override
+				public boolean onMyLocationButtonClick()
+				{
+					// TODO Auto-generated method stub
+					getLocation();
+					return false;
+				}
+			});
+			
 			// check if map is created successfully or not
 			if (mGoogleMap == null)
 			{
@@ -340,7 +375,7 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 	protected void onResume()
 	{
 		super.onResume();
-		initilizeMap();
+		// initilizeMap();
 	}
 
 	public class MyAdapter extends FragmentStatePagerAdapter
@@ -498,9 +533,29 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 
 			center_x = Constants.currentLatLng.longitude;
 			center_y = Constants.currentLatLng.latitude;
+			
+			float mapSize = 15.0f;
 
+			if (0 < km_dis && km_dis <= 0.3)
+			{
+				mapSize = 16.0f;
+			} else if (0.3 < km_dis && km_dis <= 0.5)
+			{
+				mapSize = 15.0f;
+			} else if (0.5 < km_dis && km_dis <= 1)
+			{
+				mapSize = 14.0f;
+			} else if (1 < km_dis && km_dis <= 2)
+			{
+				mapSize = 13.0f;
+			} else
+			{
+				mapSize = 12.0f;
+			}
+			
+			
 			mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(
-					Constants.currentLatLng.latitude, Constants.currentLatLng.longitude), 16.0f));
+					Constants.currentLatLng.latitude, Constants.currentLatLng.longitude), mapSize));
 
 			// Taipei Train Station
 			// center_x = 121.5172;
@@ -519,8 +574,8 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 	public void onConnected(Bundle bundle)
 	{
 
-		if (Datas.mEstates == null || Datas.mEstates.size() == 0)
-			getLocation();
+		// if (Datas.mEstates == null || Datas.mEstates.size() == 0)
+		getLocation();
 
 	}
 
@@ -690,7 +745,7 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 		SeekBar seekBarDistance = (SeekBar) distance_view.findViewById(R.id.seekbar_distance);
 
 		textDistance.setText(Double.toString(km_dis) + "km");
-		int pp = (int) (km_dis / 0.05);
+		int pp = (int) (km_dis / 0.015);
 		seekBarDistance.setProgress(pp);
 
 		seekBarDistance.setOnSeekBarChangeListener(new OnSeekBarChangeListener()
@@ -714,7 +769,7 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
 			{
 				// TODO Auto-generated method stub
-				double d = progress * 0.05;
+				double d = progress * 0.015;
 				String d_String = Double.toString(d).substring(0, 3);
 				textDistance.setText(d_String + "km");
 				km_dis = Double.valueOf(d_String);
@@ -726,8 +781,14 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 		editDialog.setPositiveButton("確定", new DialogInterface.OnClickListener()
 		{
 			public void onClick(DialogInterface arg0, int arg1)
-			{
-				btnDistance.setText(Double.toString(km_dis) + "km");
+			{	
+				if (km_dis!=0)
+				{
+					btnDistance.setText(Double.toString(km_dis) + "km");
+				}else{
+					Toast.makeText(MainActivity.this, "半徑不能為0", Toast.LENGTH_SHORT).show();
+				}
+				
 			}
 		});
 		editDialog.setNegativeButton("取消", new DialogInterface.OnClickListener()
