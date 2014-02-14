@@ -2,19 +2,22 @@ package com.kosbrother.houseprice.fragment;
 
 import java.util.ArrayList;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
-import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
 
+import com.kosbrother.houseprice.AppConstants;
 import com.kosbrother.houseprice.Datas;
+import com.kosbrother.houseprice.DetailActivity;
 import com.kosbrother.houseprice.R;
 import com.kosbrother.houseprice.api.InfoParserApi;
 import com.kosbrother.houseprice.entity.RealEstate;
@@ -26,10 +29,12 @@ public class BreiefFragment extends Fragment
 	private LinearLayout layoutBrief;
 	private View layoutDetailView;
 	private int mPosition;
-	
+
 	private TextView textEstateItemNums;
 	private TextView textEstateSquarePrice;
 	private TextView textSquarePriceChange;
+	
+	private int rowHight = 0; 
 	
 	// private static BreiefFragment mBreiefFragment;
 
@@ -49,15 +54,15 @@ public class BreiefFragment extends Fragment
 		View v = inflater.inflate(R.layout.fragment_breief, null);
 		layoutBrief = (LinearLayout) v.findViewById(R.id.layout_breif);
 		layoutDetailView = v.findViewById(R.id.layout_detail);
-		
+
 		textEstateItemNums = (TextView) v.findViewById(R.id.text_estate_item_num);
 		textEstateSquarePrice = (TextView) v.findViewById(R.id.text_estate_square_price);
 		textSquarePriceChange = (TextView) v.findViewById(R.id.text_square_price_change);
-		
+
 		detailTableLayout = (TableLayout) v.findViewById(R.id.detail_talble);
 		Bundle bundle = getArguments();
 		mPosition = bundle.getInt("num");
-		
+
 		return v;
 	}
 
@@ -68,131 +73,187 @@ public class BreiefFragment extends Fragment
 
 	}
 
-	public void changeDetailView()
+	public boolean changeToDetailView()
 	{
-		layoutBrief.setVisibility(View.GONE);
-		layoutDetailView.setVisibility(View.VISIBLE);
+		if (layoutBrief.getVisibility() == View.VISIBLE)
+		{
+			layoutBrief.setVisibility(View.GONE);
+			layoutDetailView.setVisibility(View.VISIBLE);
+			return true;
+		}else {
+			layoutBrief.setVisibility(View.VISIBLE);
+			layoutDetailView.setVisibility(View.GONE);
+			return false;
+		}
+		
 	}
 
 	public void addDetailViews()
 	{	
-		ArrayList<RealEstate>  theEstates = new ArrayList<RealEstate>();
+		detailTableLayout.removeAllViews();
+		ArrayList<RealEstate> theEstates = new ArrayList<RealEstate>();
 		theEstates = Datas.mEstatesMap.get(Datas.mArrayKey.get(mPosition));
-		
+
 		for (int i = 0; i < theEstates.size(); i++)
 		{
 
-			TableRow newTableRow = new TableRow(getActivity());
+			final TableRow newTableRow = new TableRow(getActivity());
 			newTableRow.setGravity(Gravity.CENTER_HORIZONTAL);
 			// newTableRow.setWeightSum(7);
-
+			if (rowHight == 0)
+			{
+				rowHight =(int) AppConstants.convertDpToPixel(36, getActivity());
+			}
+//			
+//			TableRow.LayoutParams tlparams = new TableRow.LayoutParams(
+//					TableRow.LayoutParams.WRAP_CONTENT, rowHight);
+//			newTableRow.setLayoutParams(tlparams);
+			
 			String year = Integer.toString(theEstates.get(i).exchange_year);
 			String month = Integer.toString(theEstates.get(i).exchange_month);
 
 			TextView tDateView = new TextView(getActivity());
 			tDateView.setText(year + "/" + month);
-			tDateView.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.TOP);
-			tDateView.setLayoutParams(new TableRow.LayoutParams(0, 40, 1f));
+			tDateView.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
+			tDateView.setLayoutParams(new TableRow.LayoutParams(0, rowHight, 1f));
 			newTableRow.addView(tDateView);
 
 			int groundTypeId = theEstates.get(i).ground_type_id;
 			String groundType = InfoParserApi.parseGroundType(groundTypeId);
 			TextView tBuyTypeView = new TextView(getActivity());
 			tBuyTypeView.setText(groundType);
-			tBuyTypeView.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.TOP);
-			tBuyTypeView.setLayoutParams(new TableRow.LayoutParams(0, 40, 1f));
+			tBuyTypeView.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
+			tBuyTypeView.setLayoutParams(new TableRow.LayoutParams(0, rowHight, 1f));
 			newTableRow.addView(tBuyTypeView);
 
 			int buildingTypeId = theEstates.get(i).building_type_id;
 			String buildType = InfoParserApi.parseBuildingType(buildingTypeId);
 			TextView tBuildingView = new TextView(getActivity());
 			tBuildingView.setText(buildType);
-			tBuildingView.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.TOP);
-			tBuildingView.setLayoutParams(new TableRow.LayoutParams(0, 40, 1f));
+			tBuildingView.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
+			tBuildingView.setLayoutParams(new TableRow.LayoutParams(0, rowHight, 1f));
 			newTableRow.addView(tBuildingView);
 
 			TextView tTotalPriceView = new TextView(getActivity());
 			tTotalPriceView.setText(Integer.toString(theEstates.get(i).total_price));
-			tTotalPriceView.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.TOP);
-			tTotalPriceView.setLayoutParams(new TableRow.LayoutParams(0, 40, 1f));
+			tTotalPriceView.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
+			tTotalPriceView.setLayoutParams(new TableRow.LayoutParams(0, rowHight, 1f));
 			newTableRow.addView(tTotalPriceView);
 
 			TextView tSquarePriceView = new TextView(getActivity());
 			tSquarePriceView.setText(Double.toString(theEstates.get(i).square_price));
-			tSquarePriceView.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.TOP);
-			tSquarePriceView.setLayoutParams(new TableRow.LayoutParams(0, 40, 1f));
+			tSquarePriceView.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
+			tSquarePriceView.setLayoutParams(new TableRow.LayoutParams(0, rowHight, 1f));
 			newTableRow.addView(tSquarePriceView);
 
 			TextView tArea = new TextView(getActivity());
-			tArea.setText("22坪");
-			tArea.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.TOP);
-			tArea.setLayoutParams(new TableRow.LayoutParams(0, 40, 1f));
+			tArea.setText(Double.toString(theEstates.get(i).total_area));
+			tArea.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
+			tArea.setLayoutParams(new TableRow.LayoutParams(0, rowHight, 1f));
+			newTableRow.setTag(i);
 			newTableRow.addView(tArea);
+			
+			if (i%2 == 1)
+			{
+				newTableRow.setBackground(getResources().getDrawable(R.drawable.table_row_odd_selector));
+			}else {
+				newTableRow.setBackground(getResources().getDrawable(R.drawable.table_row_even_selector));
+			}
+			
 
-//			TextView tRoomsView = new TextView(getActivity());
-//			tRoomsView.setText("3/2/1");
-//			tRoomsView.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.TOP);
-//			tRoomsView.setLayoutParams(new TableRow.LayoutParams(0, 40, 1f));
-//			newTableRow.addView(tRoomsView);
+			newTableRow.setOnClickListener(new OnClickListener()
+			{
+
+				@Override
+				public void onClick(View v)
+				{
+					// Toast.makeText(getActivity(), "row click",
+					// Toast.LENGTH_SHORT).show();
+					Intent intent = new Intent();
+					intent.putExtra("MonthKey", Datas.mArrayKey.get(mPosition));
+					intent.putExtra("RowNumber", Integer.valueOf(newTableRow.getTag().toString()));
+					intent.setClass(getActivity(), DetailActivity.class);
+					startActivity(intent);
+				}
+			});
+
+			// TextView tRoomsView = new TextView(getActivity());
+			// tRoomsView.setText("3/2/1");
+			// tRoomsView.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.TOP);
+			// tRoomsView.setLayoutParams(new TableRow.LayoutParams(0, 40, 1f));
+			// newTableRow.addView(tRoomsView);
 
 			detailTableLayout.addView(newTableRow);
 
 		}
 	}
-	
-	public void setBriefViews(){
-		//	get data, and last month data
-//		ArrayList<RealEstate>  theEstates = new ArrayList<RealEstate>();
-//		theEstates = Datas.mEstatesMap.get(Datas.mArrayKey.get(mPosition));
-		
+
+	public void setBriefViews()
+	{
+		// get data, and last month data
+		// ArrayList<RealEstate> theEstates = new ArrayList<RealEstate>();
+		// theEstates = Datas.mEstatesMap.get(Datas.mArrayKey.get(mPosition));
+
 		String monthKey = Datas.mArrayKey.get(mPosition);
-		
-		
+
 		int itemNums = Datas.getMonthEstatesNum(monthKey);
 		textEstateItemNums.setText(Integer.toString(itemNums) + "筆");
-		
-		
-		double avgSquarePrice = Datas.getMonthAvgSquarePrice(monthKey);
-		String avgSquarePriceString = Double.toString(avgSquarePrice);
-		if (avgSquarePriceString.indexOf(".")!=-1)
+
+		if (itemNums == 0)
 		{
-			textEstateSquarePrice.setText(avgSquarePriceString.substring(0, avgSquarePriceString.indexOf(".")+2) + "萬");
-		}else {
-			textEstateSquarePrice.setText(avgSquarePriceString + "萬");
+			textEstateSquarePrice.setText("~" + "萬");
+		} else
+		{
+			double avgSquarePrice = Datas.getMonthAvgSquarePrice(monthKey);
+			String avgSquarePriceString = Double.toString(avgSquarePrice);
+			if (avgSquarePriceString.indexOf(".") != -1)
+			{
+				textEstateSquarePrice.setText(avgSquarePriceString.substring(0,
+						avgSquarePriceString.indexOf(".") + 2) + "萬");
+			} else
+			{
+				textEstateSquarePrice.setText(avgSquarePriceString + "萬");
+			}
 		}
-		
-		
+
 		try
 		{
 			String lastMonthKey = Datas.mArrayKey.get(mPosition + 1);
-			double percentChange =  Datas.getSquarePriceChange(monthKey, lastMonthKey);
-			if (percentChange > 1){
-				percentChange = (percentChange -1)*100;
+			double percentChange = Datas.getSquarePriceChange(monthKey, lastMonthKey);
+			if (percentChange > 1)
+			{
+				percentChange = (percentChange - 1) * 100;
 				String percentString = Double.toString(percentChange);
-				if (percentString.indexOf(".")!=-1){
-					textSquarePriceChange.setText("漲"+percentString.substring(0, percentString.indexOf(".")+2)+"%");
-				}else {
-					textSquarePriceChange.setText("漲"+percentString+"%");
+				if (percentString.indexOf(".") != -1)
+				{
+					textSquarePriceChange.setText("漲"
+							+ percentString.substring(0, percentString.indexOf(".") + 2) + "%");
+				} else
+				{
+					textSquarePriceChange.setText("漲" + percentString + "%");
 				}
-			}else {
-				percentChange = (1 - percentChange)*100;
+			} else
+			{
+				percentChange = (1 - percentChange) * 100;
 				String percentString = Double.toString(percentChange);
-				if (percentString.indexOf(".")!=-1){
-					textSquarePriceChange.setText("跌"+percentString.substring(0, percentString.indexOf(".")+2)+"%");
-				}else {
-					textSquarePriceChange.setText("跌"+percentString+"%");
+				if (percentString.indexOf(".") != -1)
+				{
+					textSquarePriceChange.setText("跌"
+							+ percentString.substring(0, percentString.indexOf(".") + 2) + "%");
+				} else
+				{
+					textSquarePriceChange.setText("跌" + percentString + "%");
 				}
 			}
-			
-			
+
 		} catch (Exception e)
 		{
 			textSquarePriceChange.setText(" ~ " + "%");
 		}
-		
-		
+
 	}
-	
+
+
 	// public static BreiefFragment getBreiefFragment(){
 	// return mBreiefFragment;
 	// }

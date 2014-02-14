@@ -3,20 +3,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:weightSum="1" >
+    android:weightSum="9" >
 
     <fragment
         android:id="@+id/map"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.3"
+        android:layout_weight="3"
         class="com.kosbrother.houseprice.fragment.TransparentSupportMapFragment" />
 
     <LinearLayout
         android:id="@+id/layout_outside_map"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.7"
+        android:layout_weight="6"
         android:orientation="vertical" >
 
         <LinearLayout
@@ -60,11 +60,13 @@
 
                 <ImageView
                     android:id="@+id/imageview_search"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
                     android:layout_alignRight="@id/edittext_search"
                     android:layout_marginRight="10dp"
-                    android:src="@drawable/icon_search" />
+                    android:src="@drawable/icon_search" 
+                    android:background="@drawable/table_row_even_selector"
+                    />
             </LinearLayout>
         </LinearLayout>
         <!--
@@ -117,12 +119,14 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="房價總攬" />
+                android:text="房價總攬"
+                android:textColor="#FFFFFF"
+                 />
 
             <ImageView
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:background="@drawable/icon_down" />
+                android:background="@drawable/icon_down_white" />
         </LinearLayout>
 
         <!-- tabhost for whole data -->

@@ -1,8 +1,11 @@
 package com.kosbrother.houseprice;
 
+import android.content.Context;
+import android.util.DisplayMetrics;
+
 import com.google.android.gms.maps.model.LatLng;
 
-public class Constants
+public class AppConstants
 {
 	public static boolean isSaledMarkerShow = true;
 	public static boolean isRentMarkerShow = true;
@@ -20,4 +23,16 @@ public class Constants
 	
 	public static final String MEDIATION_KEY = "3fa92baa5f514278";
 	
+	
+	public static float convertDpToPixel(float dp, Context context)
+	{
+		float px = dp * getDensity(context);
+		return px;
+	}
+
+	public static float getDensity(Context context)
+	{
+		DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+		return metrics.density;
+	}
 }

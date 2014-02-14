@@ -30,14 +30,17 @@
         android:background="@color/gray_1"
         android:orientation="horizontal" >
 
-        <Button
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:background="@drawable/icon_previous" />
+        <ImageButton
+            android:id="@+id/button_previous"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/contact_us_selector"
+            android:src="@drawable/icon_previous"
+            />
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="30dp"
+            android:layout_height="35dp"
             android:layout_weight="1"
             android:gravity="center" >
 
@@ -47,19 +50,24 @@
                 android:layout_height="wrap_content"
                 android:text="102/11"
                 android:textColor="@color/white" />
-            <Button 
+            <ImageButton 
                 android:id="@+id/button_list"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:background="@drawable/icon_view_as_list"
+                android:background="@drawable/contact_us_selector"
+                android:src="@drawable/icon_view_as_list"
+                android:layout_marginLeft="3dp"
                 />
             
         </LinearLayout>
 
-        <Button
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:background="@drawable/icon_next" />
+        <ImageButton
+            android:id="@+id/button_next"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/contact_us_selector"
+            android:src="@drawable/icon_next"
+             />
     </LinearLayout>
 
     <android.support.v4.view.ViewPager

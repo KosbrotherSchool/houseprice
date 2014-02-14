@@ -15,6 +15,10 @@ import org.json.JSONObject;
 
 import android.util.Log;
 
+import com.kosbrother.houseprice.Datas;
+import com.kosbrother.houseprice.entity.BuildingData;
+import com.kosbrother.houseprice.entity.LandData;
+import com.kosbrother.houseprice.entity.ParkingData;
 import com.kosbrother.houseprice.entity.RealEstate;
 
 public class HouseApi
@@ -23,13 +27,47 @@ public class HouseApi
 	public static final String TAG = "HOUSE_API";
 	public static final boolean DEBUG = true;
 
-	public static ArrayList<RealEstate> getAroundAllByAreas(double km_dis, double center_x,
-			double center_y)
+	public static ArrayList<RealEstate> getAroundAllByAreas(double km_dis,
+			double center_x, double center_y, String hp_min, String hp_max,
+			String area_min, String area_max, String groundTypeString,
+			String buildingTypeString)
 	{
 
-		String message = getMessageFromServer("GET", "/api/v1/estate/get_estate_by_distance?"
-				+ "km_dis=" + km_dis + "&center_x=" + center_x + "&center_y=" + center_y, null,
-				null);
+		String query_link = "/api/v1/estate/get_estate_by_distance?"
+				+ "km_dis=" + km_dis + "&center_x=" + center_x + "&center_y="
+				+ center_y;
+
+		if (hp_min != null)
+		{
+			query_link = query_link + "&hp_min=" + hp_min;
+		}
+
+		if (hp_max != null)
+		{
+			query_link = query_link + "&hp_max=" + hp_max;
+		}
+
+		if (area_min != null)
+		{
+			query_link = query_link + "&a_min=" + area_min;
+		}
+
+		if (area_max != null)
+		{
+			query_link = query_link + "&a_max=" + area_max;
+		}
+
+		if (groundTypeString != null)
+		{
+			query_link = query_link + "&ground_type=" + groundTypeString;
+		}
+
+		if (buildingTypeString != null)
+		{
+			query_link = query_link + "&building_type=" + buildingTypeString;
+		}
+
+		String message = getMessageFromServer("GET", query_link, null, null);
 
 		ArrayList<RealEstate> realEstates = new ArrayList<RealEstate>();
 		if (message == null)
@@ -43,8 +81,8 @@ public class HouseApi
 
 	public static int getCurrentCrawlDate()
 	{
-		String message = getMessageFromServer("GET", "/api/v1/estate/get_current_crawl_data", null,
-				null);
+		String message = getMessageFromServer("GET",
+				"/api/v1/estate/get_current_crawl_data", null, null);
 		if (message == null)
 		{
 			return 0;
@@ -54,20 +92,149 @@ public class HouseApi
 		}
 	}
 
+	public static boolean getEstateDetails(int estate_id)
+	{
+		String message = getMessageFromServer("GET",
+				"/api/v1/estate/get_estate_details?estate_id=" + estate_id,
+				null, null);
+		if (message == null)
+		{
+			return false;
+		} else
+		{
+			return parseEstateDetailMessage(message);
+		}
+	}
+
+	private static boolean parseEstateDetailMessage(String message)
+	{
+		try
+		{
+			JSONArray jArray;
+			jArray = new JSONArray(message.toString());
+
+			// for estate data
+			int estate_id = jArray.getJSONObject(0).getInt("id");
+
+			String estate_address = jArray.getJSONObject(0)
+					.getString("address");
+
+			int exchange_year = jArray.getJSONObject(0).getInt("exchange_year");
+			int exchange_month = jArray.getJSONObject(0).getInt(
+					"exchange_month");
+			int total_price = jArray.getJSONObject(0).getInt("total_price");
+			double square_price = jArray.getJSONObject(0).getDouble(
+					"square_price");
+			double total_area = jArray.getJSONObject(0).getDouble("total_area");
+
+			String exchange_content = jArray.getJSONObject(0).getString(
+					"exchange_content");
+			String building_type = jArray.getJSONObject(0).getString(
+					"building_type");
+			String building_rooms = jArray.getJSONObject(0).getString(
+					"building_rooms");
+
+			Double x_long = jArray.getJSONObject(0).getDouble("x_long");
+			Double y_lat = jArray.getJSONObject(0).getDouble("y_lat");
+
+			int county_id = jArray.getJSONObject(0).getInt("county_id");
+			int town_id = jArray.getJSONObject(0).getInt("town_id");
+			int ground_type_id = jArray.getJSONObject(0).getInt(
+					"ground_type_id");
+			int building_type_id = jArray.getJSONObject(0).getInt(
+					"building_type_id");
+
+			String notes = jArray.getJSONObject(0).getString("notes");
+
+			RealEstate newEstate = new RealEstate(estate_id, 1, estate_address,
+					exchange_year, exchange_month, total_price, square_price,
+					total_area, exchange_content, building_type,
+					building_rooms, x_long, y_lat, county_id, town_id,
+					ground_type_id, building_type_id, notes);
+			Datas.mDetailEstates.add(newEstate);
+
+			// for land data
+			JSONArray jLandArray = jArray.getJSONArray(1);
+			for (int i = 0; i < jLandArray.length(); i++)
+			{
+				int l_estate_id = jLandArray.getJSONObject(i).getInt(
+						"realestate_id");
+				String l_position = jLandArray.getJSONObject(i).getString(
+						"land_position");
+				String l_area = jLandArray.getJSONObject(i).getString(
+						"land_area");
+				String l_usage = jLandArray.getJSONObject(i).getString(
+						"land_usage");
+				LandData newLandData = new LandData(l_estate_id, l_position,
+						l_area, l_usage);
+				Datas.mLandDatas.add(newLandData);
+			}
+
+			// for building data
+			JSONArray jBuildingArray = jArray.getJSONArray(2);
+			for (int j = 0; j < jBuildingArray.length(); j++)
+			{
+				int b_estate_id = jBuildingArray.getJSONObject(j).getInt(
+						"realestate_id");
+				int b_age = jBuildingArray.getJSONObject(j).getInt(
+						"building_age");
+				String b_area = jBuildingArray.getJSONObject(j).getString(
+						"building_area");
+				String b_purpose = jBuildingArray.getJSONObject(j).getString(
+						"building_purpose");
+				String b_material = jBuildingArray.getJSONObject(j).getString(
+						"building_material");
+				String b_built_date = jBuildingArray.getJSONObject(j)
+						.getString("building_built_date");
+				String b_total_layer = jBuildingArray.getJSONObject(j)
+						.getString("building_total_layer");
+				String b_building_layer = jBuildingArray.getJSONObject(j)
+						.getString("building_layer");
+				BuildingData newBuildingData = new BuildingData(b_estate_id,
+						b_age, b_area, b_purpose, b_material, b_built_date,
+						b_total_layer, b_building_layer);
+				Datas.mBuildingDatas.add(newBuildingData);
+			}
+
+			// for parking data
+			JSONArray jParkingArray = jArray.getJSONArray(3);
+			for (int k = 0; k < jParkingArray.length(); k++)
+			{
+				int p_estate_id = jParkingArray.getJSONObject(k).getInt(
+						"realestate_id");
+				String p_type = jParkingArray.getJSONObject(k).getString(
+						"parking_type");
+				String p_price = jParkingArray.getJSONObject(k).getString(
+						"parking_price");
+				String p_area = jParkingArray.getJSONObject(k).getString(
+						"parking_area");
+				ParkingData newParkingData = new ParkingData(p_estate_id,
+						p_type, p_price, p_area);
+				Datas.mParkingDatas.add(newParkingData);
+			}
+
+			return true;
+		} catch (Exception e)
+		{
+			return false;
+		}
+	}
+
 	private static int parseDateMessage(String message)
 	{
 		try
 		{
-//			JSONArray jArray;
-//			jArray = new JSONArray(message.toString());
+			// JSONArray jArray;
+			// jArray = new JSONArray(message.toString());
 			JSONObject jsonObject = new JSONObject(message.toString());
 			int year = jsonObject.getInt("crawl_year");
 			int month = jsonObject.getInt("crawl_month");
-			return year * 100 + month;			
-		}catch(Exception e){
+			return year * 100 + month;
+		} catch (Exception e)
+		{
 			return 0;
 		}
-		
+
 	}
 
 	private static ArrayList<RealEstate> parseEstateMessage(String message,
@@ -95,7 +262,8 @@ public class HouseApi
 				int exchange_year = 0;
 				try
 				{
-					exchange_year = jArray.getJSONObject(i).getInt("exchange_year");
+					exchange_year = jArray.getJSONObject(i).getInt(
+							"exchange_year");
 
 				} catch (Exception e)
 				{
@@ -105,7 +273,8 @@ public class HouseApi
 				int exchange_month = 0;
 				try
 				{
-					exchange_month = jArray.getJSONObject(i).getInt("exchange_month");
+					exchange_month = jArray.getJSONObject(i).getInt(
+							"exchange_month");
 
 				} catch (Exception e)
 				{
@@ -125,7 +294,8 @@ public class HouseApi
 				double square_price = 0;
 				try
 				{
-					square_price = jArray.getJSONObject(i).getDouble("square_price");
+					square_price = jArray.getJSONObject(i).getDouble(
+							"square_price");
 
 				} catch (Exception e)
 				{
@@ -135,7 +305,8 @@ public class HouseApi
 				int building_type_id = 0;
 				try
 				{
-					building_type_id = jArray.getJSONObject(i).getInt("building_type_id");
+					building_type_id = jArray.getJSONObject(i).getInt(
+							"building_type_id");
 
 				} catch (Exception e)
 				{
@@ -145,11 +316,22 @@ public class HouseApi
 				int ground_type_id = 0;
 				try
 				{
-					ground_type_id = jArray.getJSONObject(i).getInt("ground_type_id");
+					ground_type_id = jArray.getJSONObject(i).getInt(
+							"ground_type_id");
 
 				} catch (Exception e)
 				{
 					// TODO: handle exception
+				}
+
+				double total_area = 0;
+				try
+				{
+					total_area = jArray.getJSONObject(i)
+							.getDouble("total_area");
+				} catch (Exception e)
+				{
+
 				}
 
 				// String estate_address = "";
@@ -165,8 +347,9 @@ public class HouseApi
 				double x_lat = jArray.getJSONObject(i).getDouble("x_long");
 				double y_long = jArray.getJSONObject(i).getDouble("y_lat");
 
-				RealEstate newEstate = new RealEstate(id, exchange_year, exchange_month,
-						total_price, square_price, x_lat, y_long, building_type_id, ground_type_id);
+				RealEstate newEstate = new RealEstate(id, exchange_year,
+						exchange_month, total_price, square_price, x_lat,
+						y_long, building_type_id, ground_type_id, total_area);
 				realEstates.add(newEstate);
 
 			}
@@ -182,8 +365,8 @@ public class HouseApi
 
 	}
 
-	public static String getMessageFromServer(String requestMethod, String apiPath,
-			JSONObject json, String apiUrl)
+	public static String getMessageFromServer(String requestMethod,
+			String apiPath, JSONObject json, String apiUrl)
 	{
 		Log.i(TAG, "Start Load from server:" + System.currentTimeMillis());
 		URL url;
@@ -197,10 +380,12 @@ public class HouseApi
 			if (DEBUG)
 				Log.d(TAG, "URL: " + url);
 
-			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			HttpURLConnection connection = (HttpURLConnection) url
+					.openConnection();
 			connection.setRequestMethod(requestMethod);
 
-			connection.setRequestProperty("Content-Type", "application/json;charset=utf-8");
+			connection.setRequestProperty("Content-Type",
+					"application/json;charset=utf-8");
 			if (requestMethod.equalsIgnoreCase("POST"))
 				connection.setDoOutput(true);
 			connection.setDoInput(true);
