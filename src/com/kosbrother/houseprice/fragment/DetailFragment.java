@@ -10,12 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.internal.t;
-import com.kosbrother.houseprice.AppConstants;
 import com.kosbrother.houseprice.Datas;
 import com.kosbrother.houseprice.DetailActivity;
 import com.kosbrother.houseprice.R;
@@ -34,7 +31,7 @@ public class DetailFragment extends Fragment
 	private ImageLoader imageLoader;
 	private static DetailActivity mActivity;
 	private RealEstate theEstate;
-	private boolean isGotData;
+	private boolean isGotData = true;
 	private int text_size = 13;
 
 	/**
@@ -156,11 +153,21 @@ public class DetailFragment extends Fragment
 		@Override
 		protected Void doInBackground(Void... arg)
 		{
-			// TODO Auto-generated method stub
-			// theEstate =
-			// EstateApi.getEsatateById(Datas.mEstates.get(mNum).estate_id);
-			// theEstate = Datas.mEstatesMap.get(mMonthKey).get(mNum);
-			isGotData = HouseApi.getEstateDetails(theEstate.estate_id);
+			// check if already got data
+			boolean isNeedRun = true;
+			for (int i = 0; i < Datas.mDetailEstates.size(); i++)
+			{
+				RealEstate tEstate = Datas.mDetailEstates.get(i);
+				if (theEstate.estate_id == tEstate.estate_id)
+				{
+					isNeedRun = false;
+				}
+			}
+			if (isNeedRun)
+			{
+				isGotData = HouseApi.getEstateDetails(theEstate.estate_id);
+			}
+
 			return null;
 		}
 
@@ -171,7 +178,14 @@ public class DetailFragment extends Fragment
 
 			if (isGotData)
 			{
-				theEstate = Datas.mDetailEstates.get(mNum);
+				for (int i = 0; i < Datas.mDetailEstates.size(); i++)
+				{
+					RealEstate tEstate = Datas.mDetailEstates.get(i);
+					if (theEstate.estate_id == tEstate.estate_id)
+					{
+						theEstate = tEstate;
+					}
+				}
 
 				text_address.setText(theEstate.estate_address);
 				text_date.setText(Integer.toString(theEstate.exchange_year)
@@ -207,7 +221,7 @@ public class DetailFragment extends Fragment
 						t_usage.setText("使用分區:" + theLandData.land_usage);
 						t_usage.setTextSize(text_size);
 						groundDetailLayout.addView(t_usage);
-						
+
 						LinearLayout line = new LinearLayout(getActivity());
 						line.setLayoutParams(new LinearLayout.LayoutParams(
 								LayoutParams.MATCH_PARENT, 1, 0));
@@ -217,8 +231,9 @@ public class DetailFragment extends Fragment
 
 					}
 				}
-				
-				groundDetailLayout.removeViewAt(groundDetailLayout.getChildCount()-1);
+
+				groundDetailLayout.removeViewAt(groundDetailLayout
+						.getChildCount() - 1);
 
 				for (int i = 0; i < Datas.mBuildingDatas.size(); i++)
 				{
@@ -268,32 +283,30 @@ public class DetailFragment extends Fragment
 
 					}
 				}
-				
-				buildingDetailLayout.removeViewAt(buildingDetailLayout.getChildCount()-1);
-				
+
+				buildingDetailLayout.removeViewAt(buildingDetailLayout
+						.getChildCount() - 1);
+
 				for (int j = 0; j < Datas.mParkingDatas.size(); j++)
 				{
 					ParkingData theParkingData = Datas.mParkingDatas.get(j);
 					if (theParkingData.estate_id == theEstate.estate_id)
 					{
 						TextView t_type = new TextView(getActivity());
-						t_type.setText("車位類別:"
-								+ theParkingData.parking_type);
+						t_type.setText("車位類別:" + theParkingData.parking_type);
 						t_type.setTextSize(text_size);
 						parkingDetailLayout.addView(t_type);
-						
+
 						TextView t_price = new TextView(getActivity());
-						t_price.setText("車位價格:"
-								+ theParkingData.parking_price);
+						t_price.setText("車位價格:" + theParkingData.parking_price);
 						t_price.setTextSize(text_size);
 						parkingDetailLayout.addView(t_price);
-						
+
 						TextView t_area = new TextView(getActivity());
-						t_area.setText("車位面積:"
-								+ theParkingData.parking_area);
+						t_area.setText("車位面積:" + theParkingData.parking_area);
 						t_area.setTextSize(text_size);
 						parkingDetailLayout.addView(t_area);
-						
+
 						LinearLayout line = new LinearLayout(getActivity());
 						line.setLayoutParams(new LinearLayout.LayoutParams(
 								LayoutParams.MATCH_PARENT, 1, 0));
@@ -302,9 +315,10 @@ public class DetailFragment extends Fragment
 						parkingDetailLayout.addView(line);
 					}
 				}
-				
-				parkingDetailLayout.removeViewAt(parkingDetailLayout.getChildCount()-1);
-				
+
+				parkingDetailLayout.removeViewAt(parkingDetailLayout
+						.getChildCount() - 1);
+
 			} else
 			{
 				Toast.makeText(getActivity(), "Detail Data Wrong",

@@ -48,9 +48,11 @@ import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.kosbrother.houseprice.api.HouseApi;
 import com.kosbrother.houseprice.entity.RealEstate;
@@ -59,8 +61,8 @@ import com.kosbrother.houseprice.fragment.MonthSquarePriceFragment;
 import com.kosbrother.houseprice.fragment.MonthTotalPriceFragment;
 import com.kosbrother.houseprice.fragment.TransparentSupportMapFragment;
 
-public class MainActivity extends SherlockFragmentActivity implements LocationListener,
-		GooglePlayServicesClient.ConnectionCallbacks,
+public class MainActivity extends SherlockFragmentActivity implements
+		LocationListener, GooglePlayServicesClient.ConnectionCallbacks,
 		GooglePlayServicesClient.OnConnectionFailedListener
 {
 
@@ -101,33 +103,40 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		km_dis = Double.valueOf(Setting.getSetting(Setting.keyKmDistance, this));
-		hpMinString = Setting.getSetting(Setting.keyHousePriceMin, MainActivity.this);
+		km_dis = Double
+				.valueOf(Setting.getSetting(Setting.keyKmDistance, this));
+		hpMinString = Setting.getSetting(Setting.keyHousePriceMin,
+				MainActivity.this);
 		if (hpMinString.equals("0"))
 		{
 			hpMinString = null;
 		}
-		hpMaxString = Setting.getSetting(Setting.keyHousePriceMax, MainActivity.this);
+		hpMaxString = Setting.getSetting(Setting.keyHousePriceMax,
+				MainActivity.this);
 		if (hpMaxString.equals("0"))
 		{
 			hpMaxString = null;
 		}
-		areaMinString = Setting.getSetting(Setting.keyAreaMin, MainActivity.this);
+		areaMinString = Setting.getSetting(Setting.keyAreaMin,
+				MainActivity.this);
 		if (areaMinString.equals("0"))
 		{
 			areaMinString = null;
 		}
-		areaMaxString = Setting.getSetting(Setting.keyAreaMax, MainActivity.this);
+		areaMaxString = Setting.getSetting(Setting.keyAreaMax,
+				MainActivity.this);
 		if (areaMaxString.equals("0"))
 		{
 			areaMaxString = null;
 		}
-		groundTypeString = Setting.getSetting(Setting.keyGroundType, MainActivity.this);
+		groundTypeString = Setting.getSetting(Setting.keyGroundType,
+				MainActivity.this);
 		if (groundTypeString.equals("0"))
 		{
 			groundTypeString = null;
 		}
-		buildingTypeString = Setting.getSetting(Setting.keyBuildingType, MainActivity.this);
+		buildingTypeString = Setting.getSetting(Setting.keyBuildingType,
+				MainActivity.this);
 		if (buildingTypeString.equals("0"))
 		{
 			buildingTypeString = null;
@@ -163,13 +172,13 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 			public void onClick(View v)
 			{
 				// TODO Auto-generated method stub
-				BreiefFragment theBreiefFragment = mAdapter.getCurrBreiefFragment(mPager
-						.getCurrentItem());
+				BreiefFragment theBreiefFragment = mAdapter
+						.getCurrBreiefFragment(mPager.getCurrentItem());
 				if (theBreiefFragment.changeToDetailView())
 				{
 					theBreiefFragment.addDetailViews();
 				}
-				
+
 			}
 		});
 
@@ -191,24 +200,26 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 		editTextSearch.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
 		editTextSearch.setInputType(InputType.TYPE_CLASS_TEXT);
 		editTextSearch.requestFocus();
-		editTextSearch.setOnEditorActionListener(new TextView.OnEditorActionListener()
-		{
-
-			@Override
-			public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
-			{
-				if (actionId == EditorInfo.IME_ACTION_SEARCH
-						|| event.getKeyCode() == KeyEvent.KEYCODE_ENTER)
+		editTextSearch
+				.setOnEditorActionListener(new TextView.OnEditorActionListener()
 				{
-					InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-					inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
-							0);
-					searchLocation();
-					return true;
-				}
-				return false;
-			}
-		});
+
+					@Override
+					public boolean onEditorAction(TextView v, int actionId,
+							KeyEvent event)
+					{
+						if (actionId == EditorInfo.IME_ACTION_SEARCH
+								|| event.getKeyCode() == KeyEvent.KEYCODE_ENTER)
+						{
+							InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+							inputMethodManager.hideSoftInputFromWindow(
+									getCurrentFocus().getWindowToken(), 0);
+							searchLocation();
+							return true;
+						}
+						return false;
+					}
+				});
 
 		imageViewSearch = (ImageView) findViewById(R.id.imageview_search);
 
@@ -221,12 +232,13 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 				// TODO Auto-generated method stub
 				if (editTextSearch.getText().toString().equals(""))
 				{
-					Toast.makeText(MainActivity.this, "請輸入搜索地址", Toast.LENGTH_SHORT).show();
+					Toast.makeText(MainActivity.this, "請輸入搜索地址",
+							Toast.LENGTH_SHORT).show();
 				} else
 				{
 					InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-					inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
-							0);
+					inputMethodManager.hideSoftInputFromWindow(
+							getCurrentFocus().getWindowToken(), 0);
 					searchLocation();
 				}
 
@@ -244,13 +256,15 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 			{
 				try
 				{
-					String dataString = Datas.mArrayKey.get(position).substring(0, 3) + "/"
+					String dataString = Datas.mArrayKey.get(position)
+							.substring(0, 3)
+							+ "/"
 							+ Datas.mArrayKey.get(position).substring(3);
 					textYearMonth.setText(dataString);
 
 					setMapMark(mPager.getCurrentItem());
-					BreiefFragment theBreiefFragment = mAdapter.getCurrBreiefFragment(mPager
-							.getCurrentItem());
+					BreiefFragment theBreiefFragment = mAdapter
+							.getCurrBreiefFragment(mPager.getCurrentItem());
 					theBreiefFragment.setBriefViews();
 				} catch (Exception e)
 				{
@@ -281,7 +295,8 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 			{
 				if (mPager.getCurrentItem() == 0)
 				{
-					Toast.makeText(MainActivity.this, "無上頁", Toast.LENGTH_SHORT).show();
+					Toast.makeText(MainActivity.this, "無上頁", Toast.LENGTH_SHORT)
+							.show();
 				} else
 				{
 					mPager.setCurrentItem(mPager.getCurrentItem() - 1);
@@ -299,7 +314,8 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 			{
 				if (mPager.getCurrentItem() == 3)
 				{
-					Toast.makeText(MainActivity.this, "無下頁", Toast.LENGTH_SHORT).show();
+					Toast.makeText(MainActivity.this, "無下頁", Toast.LENGTH_SHORT)
+							.show();
 				} else
 				{
 					mPager.setCurrentItem(mPager.getCurrentItem() + 1);
@@ -346,7 +362,8 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 		}
 		if (addresses == null || addresses.isEmpty())
 		{
-			Toast.makeText(MainActivity.this, "無此地點", Toast.LENGTH_SHORT).show();
+			Toast.makeText(MainActivity.this, "無此地點", Toast.LENGTH_SHORT)
+					.show();
 		} else
 		{
 			address = addresses.get(0);
@@ -373,8 +390,9 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 				mapSize = 12.0f;
 			}
 
-			mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(
-					AppConstants.currentLatLng.latitude, AppConstants.currentLatLng.longitude), mapSize));
+			mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+					new LatLng(AppConstants.currentLatLng.latitude,
+							AppConstants.currentLatLng.longitude), mapSize));
 			center_x = geoLong;
 			center_y = geoLat;
 			new GetEstatesTask().execute();
@@ -408,30 +426,33 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 
 			mGoogleMap.setMyLocationEnabled(true);
 
-			mGoogleMap.setOnMyLocationButtonClickListener(new OnMyLocationButtonClickListener()
-			{
+			mGoogleMap
+					.setOnMyLocationButtonClickListener(new OnMyLocationButtonClickListener()
+					{
 
-				@Override
-				public boolean onMyLocationButtonClick()
-				{
-					// TODO Auto-generated method stub
-					getLocation();
-					return false;
-				}
-			});
+						@Override
+						public boolean onMyLocationButtonClick()
+						{
+							// TODO Auto-generated method stub
+							getLocation();
+							return false;
+						}
+					});
 
 			// check if map is created successfully or not
 			if (mGoogleMap == null)
 			{
-				Toast.makeText(getApplicationContext(), "Sorry! unable to create maps",
-						Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(),
+						"Sorry! unable to create maps", Toast.LENGTH_SHORT)
+						.show();
 			}
 
 		}
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(com.actionbarsherlock.view.MenuItem item)
+	public boolean onOptionsItemSelected(
+			com.actionbarsherlock.view.MenuItem item)
 	{
 
 		switch (item.getItemId())
@@ -537,15 +558,16 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 			int year = crawlDateNum / 100;
 			int month = crawlDateNum % 100;
 			Toast.makeText(MainActivity.this,
-					Integer.toString(year) + "/" + Integer.toString(month), Toast.LENGTH_SHORT)
-					.show();
+					Integer.toString(year) + "/" + Integer.toString(month),
+					Toast.LENGTH_SHORT).show();
 
 			if (month > 4)
 			{
 				for (int i = 0; i < 4; i++)
 				{
 					int monthKey = month - i;
-					Datas.mArrayKey.add(Integer.toString(year * 100 + monthKey));
+					Datas.mArrayKey
+							.add(Integer.toString(year * 100 + monthKey));
 				}
 			} else
 			{
@@ -556,7 +578,8 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 					{
 						monthKey = 12;
 					}
-					Datas.mArrayKey.add(Integer.toString(year * 100 + monthKey));
+					Datas.mArrayKey
+							.add(Integer.toString(year * 100 + monthKey));
 				}
 			}
 
@@ -583,9 +606,9 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 				// TODO: handle exception
 			}
 
-			Datas.mEstates = HouseApi
-					.getAroundAllByAreas(km_dis, center_x, center_y, hpMinString, hpMaxString,
-							areaMinString, areaMaxString, groundTypeString, buildingTypeString);
+			Datas.mEstates = HouseApi.getAroundAllByAreas(km_dis, center_x,
+					center_y, hpMinString, hpMaxString, areaMinString,
+					areaMaxString, groundTypeString, buildingTypeString);
 
 			return null;
 		}
@@ -600,13 +623,14 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 				Datas.mEstatesMap = getRealEstatesMap(Datas.mEstates);
 
 				setMapMark(mPager.getCurrentItem());
-				BreiefFragment theBreiefFragment = mAdapter.getCurrBreiefFragment(mPager
-						.getCurrentItem());
+				BreiefFragment theBreiefFragment = mAdapter
+						.getCurrBreiefFragment(mPager.getCurrentItem());
 				theBreiefFragment.setBriefViews();
 
 			} else
 			{
-				Toast.makeText(MainActivity.this, "No Data!!", Toast.LENGTH_SHORT).show();
+				Toast.makeText(MainActivity.this, "No Data!!",
+						Toast.LENGTH_SHORT).show();
 			}
 
 		}
@@ -623,10 +647,13 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 		{
 			for (int i = 0; i < theEstates.size(); i++)
 			{
-				LatLng newLatLng = new LatLng(theEstates.get(i).y_lat, theEstates.get(i).x_long);
+				LatLng newLatLng = new LatLng(theEstates.get(i).y_lat,
+						theEstates.get(i).x_long);
 
-				MarkerOptions marker = new MarkerOptions().position(newLatLng);
-				marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_sale));
+				MarkerOptions marker = new MarkerOptions().position(newLatLng)
+						.title(Integer.toString(i));
+				marker.icon(BitmapDescriptorFactory
+						.fromResource(R.drawable.marker_sale));
 				mGoogleMap.addMarker(marker);
 
 			}
@@ -643,7 +670,8 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 			Location currentLocation = mLocationClient.getLastLocation();
 			if (currentLocation != null)
 			{
-				AppConstants.currentLatLng = new LatLng(currentLocation.getLatitude(),
+				AppConstants.currentLatLng = new LatLng(
+						currentLocation.getLatitude(),
 						currentLocation.getLongitude());
 			} else
 			{
@@ -675,8 +703,26 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 			}
 
 			mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(
-					AppConstants.currentLatLng.latitude, AppConstants.currentLatLng.longitude), mapSize));
-
+					AppConstants.currentLatLng.latitude,
+					AppConstants.currentLatLng.longitude), mapSize));
+			
+			mGoogleMap.setOnMarkerClickListener( new OnMarkerClickListener()
+			{
+				
+				@Override
+				public boolean onMarkerClick(Marker marker)
+				{
+					Intent intent = new Intent();
+					String monthKey = Datas.mArrayKey.get(mPager.getCurrentItem());
+					intent.putExtra("MonthKey", monthKey);
+					intent.putExtra("RowNumber", Integer.valueOf(marker.getTitle()));
+					intent.setClass(MainActivity.this, DetailActivity.class);
+					startActivity(intent);
+					return true;
+				}
+			});
+			
+			
 			// Taipei Train Station
 			// center_x = 121.5172;
 			// center_y = 25.0478;
@@ -724,7 +770,8 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 	{
 
 		// Check that Google Play services is available
-		int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+		int resultCode = GooglePlayServicesUtil
+				.isGooglePlayServicesAvailable(this);
 
 		// If Google Play services is available
 		if (ConnectionResult.SUCCESS == resultCode)
@@ -738,12 +785,14 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 		} else
 		{
 			// Display an error dialog
-			Dialog dialog = GooglePlayServicesUtil.getErrorDialog(resultCode, this, 0);
+			Dialog dialog = GooglePlayServicesUtil.getErrorDialog(resultCode,
+					this, 0);
 			if (dialog != null)
 			{
 				ErrorDialogFragment errorFragment = new ErrorDialogFragment();
 				errorFragment.setDialog(dialog);
-				errorFragment.show(getSupportFragmentManager(), LocationUtils.APPTAG);
+				errorFragment.show(getSupportFragmentManager(),
+						LocationUtils.APPTAG);
 			}
 			return false;
 		}
@@ -797,7 +846,8 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 		//
 		// // After disconnect() is called, the client is considered "dead".
 		mLocationClient.disconnect();
-
+		isReSearch = true;
+		
 		super.onStop();
 	}
 
@@ -815,17 +865,19 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 		for (int i = 0; i < realEstates.size(); i++)
 		{
 			RealEstate realEstate = realEstates.get(i);
-			String realEstateKey = Integer.toString(realEstate.exchange_year * 100
-					+ realEstate.exchange_month);
+			String realEstateKey = Integer.toString(realEstate.exchange_year
+					* 100 + realEstate.exchange_month);
 			// 先確認key是否存在
 			if (estateMap.containsKey(realEstateKey))
 			{
 				// 已經有的話就把movie加進去
-				((ArrayList<RealEstate>) estateMap.get(realEstateKey)).add(realEstate);
+				((ArrayList<RealEstate>) estateMap.get(realEstateKey))
+						.add(realEstate);
 			} else
 			{
 				// 沒有的話就建一個加進去
-				ArrayList<RealEstate> newRealEstateList = new ArrayList<RealEstate>(10);
+				ArrayList<RealEstate> newRealEstateList = new ArrayList<RealEstate>(
+						10);
 				newRealEstateList.add(realEstate);
 				estateMap.put(realEstateKey, newRealEstateList);
 			}
@@ -836,75 +888,84 @@ public class MainActivity extends SherlockFragmentActivity implements LocationLi
 	private void showSelectDistanceDialog()
 	{
 
-		AlertDialog.Builder editDialog = new AlertDialog.Builder(MainActivity.this);
+		AlertDialog.Builder editDialog = new AlertDialog.Builder(
+				MainActivity.this);
 		editDialog.setTitle("選取搜索範圍");
 
 		// final EditText editText = new EditText(ArticleActivity.this);
 		// editDialog.setView(editText);
 
 		LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
-		View distance_view = inflater.inflate(R.layout.dialog_select_distance, null);
-		final TextView textDistance = (TextView) distance_view.findViewById(R.id.text_distance);
-		SeekBar seekBarDistance = (SeekBar) distance_view.findViewById(R.id.seekbar_distance);
+		View distance_view = inflater.inflate(R.layout.dialog_select_distance,
+				null);
+		final TextView textDistance = (TextView) distance_view
+				.findViewById(R.id.text_distance);
+		SeekBar seekBarDistance = (SeekBar) distance_view
+				.findViewById(R.id.seekbar_distance);
 
 		textDistance.setText(Double.toString(km_dis) + "km");
 		int pp = (int) (km_dis / 0.03);
 		seekBarDistance.setProgress(pp);
 
-		seekBarDistance.setOnSeekBarChangeListener(new OnSeekBarChangeListener()
-		{
+		seekBarDistance
+				.setOnSeekBarChangeListener(new OnSeekBarChangeListener()
+				{
 
-			@Override
-			public void onStopTrackingTouch(SeekBar seekBar)
-			{
-				// TODO Auto-generated method stub
+					@Override
+					public void onStopTrackingTouch(SeekBar seekBar)
+					{
+						// TODO Auto-generated method stub
 
-			}
+					}
 
-			@Override
-			public void onStartTrackingTouch(SeekBar seekBar)
-			{
-				// TODO Auto-generated method stub
+					@Override
+					public void onStartTrackingTouch(SeekBar seekBar)
+					{
+						// TODO Auto-generated method stub
 
-			}
+					}
 
-			@Override
-			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
-			{
-				// TODO Auto-generated method stub
-				double d = progress * 0.03;
-				String d_String = Double.toString(d).substring(0, 3);
+					@Override
+					public void onProgressChanged(SeekBar seekBar,
+							int progress, boolean fromUser)
+					{
+						// TODO Auto-generated method stub
+						double d = progress * 0.03;
+						String d_String = Double.toString(d).substring(0, 3);
 
-				textDistance.setText(d_String + "km");
-				km_dis = Double.valueOf(d_String);
-			}
-		});
+						textDistance.setText(d_String + "km");
+						km_dis = Double.valueOf(d_String);
+					}
+				});
 
 		editDialog.setView(distance_view);
 
-		editDialog.setPositiveButton("確定", new DialogInterface.OnClickListener()
-		{
-			public void onClick(DialogInterface arg0, int arg1)
-			{
-				if (km_dis != 0)
+		editDialog.setPositiveButton("確定",
+				new DialogInterface.OnClickListener()
 				{
-					btnDistance.setText(Double.toString(km_dis) + "km");
-					Setting.saveSetting(Setting.keyKmDistance, Double.toString(km_dis),
-							MainActivity.this);
-					getLocation();
-				} else
-				{
-					Toast.makeText(MainActivity.this, "半徑不能為0", Toast.LENGTH_SHORT).show();
-				}
+					public void onClick(DialogInterface arg0, int arg1)
+					{
+						if (km_dis != 0)
+						{
+							btnDistance.setText(Double.toString(km_dis) + "km");
+							Setting.saveSetting(Setting.keyKmDistance,
+									Double.toString(km_dis), MainActivity.this);
+							getLocation();
+						} else
+						{
+							Toast.makeText(MainActivity.this, "半徑不能為0",
+									Toast.LENGTH_SHORT).show();
+						}
 
-			}
-		});
-		editDialog.setNegativeButton("取消", new DialogInterface.OnClickListener()
-		{
-			public void onClick(DialogInterface arg0, int arg1)
-			{
-			}
-		});
+					}
+				});
+		editDialog.setNegativeButton("取消",
+				new DialogInterface.OnClickListener()
+				{
+					public void onClick(DialogInterface arg0, int arg1)
+					{
+					}
+				});
 		editDialog.show();
 	}
 

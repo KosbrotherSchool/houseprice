@@ -38,7 +38,7 @@ public class DetailActivity extends SherlockFragmentActivity
 		mPager = (ViewPager) findViewById(R.id.pager);
 		mPager.setAdapter(mAdapter);
 
-//		mPager.setCurrentItem(position);
+		mPager.setCurrentItem(position);
 
 		mActionBar = getSupportActionBar();
 
@@ -102,15 +102,11 @@ public class DetailActivity extends SherlockFragmentActivity
 	protected void onDestroy()
 	{
 		super.onDestroy();
-
-		/*
-		 * You'll need this in your class to release the helper when done.
-		 */
-//		if (databaseHelper != null)
-//		{
-//			OpenHelperManager.releaseHelper();
-//			databaseHelper = null;
-//		}
+		Datas.mDetailEstates.clear();
+		Datas.mLandDatas.clear();
+		Datas.mBuildingDatas.clear();
+		Datas.mParkingDatas.clear();
+		MainActivity.isReSearch = false;
 	}
 
 	/**

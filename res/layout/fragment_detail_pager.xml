@@ -52,28 +52,28 @@
                 <LinearLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_margin="2dp"
-                     >
-	
-                   <!--  <CheckBox 
+                    android:orientation="horizontal" >
+
+                    <!--
+                         <CheckBox 
                         android:id="@+id/checkbox_favorite"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:button="@drawable/custom_checkbox"
-                        /> -->
-                    
+                        />
+                    -->
+
                     <TextView
                         android:id="@+id/text_detail_address"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
                         android:gravity="center_vertical"
+                        android:paddingBottom="3dp"
                         android:text="臺北市文山區興隆路三段185巷7弄1~50號"
                         android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:textSize="@dimen/detail_address_size"
-                        android:paddingBottom="3dp"
-                         />
+                        android:textSize="@dimen/detail_address_size" />
                 </LinearLayout>
 
                 <ImageView
@@ -127,93 +127,75 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/line_1"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal" >
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" >
 
-                        <LinearLayout
-                            android:layout_width="0dp"
+                        <TextView
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1" >
+                            android:text="標的:"
+                            android:textSize="@dimen/detail_text_size" />
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="標的:"
-                                android:textSize="@dimen/detail_text_size" />
-
-                            <TextView
-                                android:id="@+id/text_detail_estate_type"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="房地(土地+建物)"
-                                android:textSize="@dimen/detail_text_size" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
+                        <TextView
+                            android:id="@+id/text_detail_estate_type"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1" >
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="筆棟數:"
-                                android:textSize="@dimen/detail_text_size" />
-
-                            <TextView
-                                android:id="@+id/text_detail_content_buy"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="土地7建物1車位0"
-                                android:textSize="@dimen/detail_text_size" />
-                        </LinearLayout>
+                            android:text="房地(土地+建物)"
+                            android:textSize="@dimen/detail_text_size" />
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/line_2"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal" >
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" >
 
-                        <LinearLayout
-                            android:layout_width="0dp"
+                        <TextView
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1" >
+                            android:text="筆棟數:"
+                            android:textSize="@dimen/detail_text_size" />
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="移轉土地坪數："
-                                android:textSize="@dimen/detail_text_size" />
-
-                            <TextView
-                                android:id="@+id/text_detail_ground_exchange_area"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="8.4坪"
-                                android:textSize="@dimen/detail_text_size" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
+                        <TextView
+                            android:id="@+id/text_detail_content_buy"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1" >
+                            android:text="土地7建物1車位0"
+                            android:textSize="@dimen/detail_text_size" />
+                    </LinearLayout>
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="格局："
-                                android:textSize="@dimen/detail_text_size" />
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" >
 
-                            <TextView
-                                android:id="@+id/text_detail_building_exchange_area"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="24.3坪"
-                                android:textSize="@dimen/detail_text_size" />
-                        </LinearLayout>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="移轉土地坪數："
+                            android:textSize="@dimen/detail_text_size" />
+
+                        <TextView
+                            android:id="@+id/text_detail_ground_exchange_area"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="8.4坪"
+                            android:textSize="@dimen/detail_text_size" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="格局："
+                            android:textSize="@dimen/detail_text_size" />
+
+                        <TextView
+                            android:id="@+id/text_detail_building_exchange_area"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="24.3坪"
+                            android:textSize="@dimen/detail_text_size" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -280,7 +262,8 @@
                         android:layout_marginTop="2dp"
                         android:background="@color/line_gray" />
 
-                   <!--  <LinearLayout
+                    <!--
+                    <LinearLayout
                         android:id="@+id/line_0"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
@@ -318,7 +301,8 @@
                             android:layout_height="wrap_content"
                             android:text="住"
                             android:textSize="@dimen/detail_text_size" />
-                    </LinearLayout> -->
+                    </LinearLayout>
+                    -->
                 </LinearLayout>
 
                 <LinearLayout
@@ -344,7 +328,8 @@
                         android:layout_marginTop="2dp"
                         android:background="@color/line_gray" />
 
-                    <!-- <LinearLayout
+                    <!--
+                    <LinearLayout
                         android:id="@+id/line_1"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
@@ -487,7 +472,8 @@
                             android:layout_height="wrap_content"
                             android:text="有"
                             android:textSize="@dimen/detail_text_size" />
-                    </LinearLayout> -->
+                    </LinearLayout>
+                    -->
                 </LinearLayout>
 
                 <LinearLayout
@@ -513,7 +499,8 @@
                         android:layout_marginTop="2dp"
                         android:background="@color/line_gray" />
 
-                    <!-- <LinearLayout
+                    <!--
+                    <LinearLayout
                         android:id="@+id/line_0"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
@@ -571,7 +558,8 @@
                             android:layout_height="wrap_content"
                             android:text="0萬"
                             android:textSize="@dimen/detail_text_size" />
-                    </LinearLayout> -->
+                    </LinearLayout>
+                    -->
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>
