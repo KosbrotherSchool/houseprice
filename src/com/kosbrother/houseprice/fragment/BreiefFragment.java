@@ -154,10 +154,12 @@ public class BreiefFragment extends Fragment
 			newTableRow.addView(tArea);
 			
 			if (i%2 == 1)
-			{
-				newTableRow.setBackground(getResources().getDrawable(R.drawable.table_row_odd_selector));
+			{	
+				newTableRow.setBackgroundResource(R.drawable.table_row_odd_selector);
+//				newTableRow.setBackground(getResources().getDrawable(R.drawable.table_row_odd_selector));
 			}else {
-				newTableRow.setBackground(getResources().getDrawable(R.drawable.table_row_even_selector));
+				newTableRow.setBackgroundResource(R.drawable.table_row_even_selector);
+//				newTableRow.setBackground(getResources().getDrawable(R.drawable.table_row_even_selector));
 			}
 			
 
