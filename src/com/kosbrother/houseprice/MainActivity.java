@@ -51,6 +51,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -91,12 +92,15 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private int crawlDateNum = 10211;
 
 	public static boolean isReSearch = true;
-	public static String hpMinString;
-	public static String hpMaxString;
-	public static String areaMinString;
-	public static String areaMaxString;
-	public static String groundTypeString;
-	public static String buildingTypeString;
+	// public static String hpMinString;
+	// public static String hpMaxString;
+	// public static String areaMinString;
+	// public static String areaMaxString;
+	// public static String groundTypeString;
+	// public static String buildingTypeString;
+
+	private ImageButton btnFocusButton;
+	private LinearLayout linearTitleLayout;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -105,44 +109,46 @@ public class MainActivity extends SherlockFragmentActivity implements
 		setContentView(R.layout.activity_main);
 		km_dis = Double
 				.valueOf(Setting.getSetting(Setting.keyKmDistance, this));
-		hpMinString = Setting.getSetting(Setting.keyHousePriceMin,
-				MainActivity.this);
-		if (hpMinString.equals("0"))
-		{
-			hpMinString = null;
-		}
-		hpMaxString = Setting.getSetting(Setting.keyHousePriceMax,
-				MainActivity.this);
-		if (hpMaxString.equals("0"))
-		{
-			hpMaxString = null;
-		}
-		areaMinString = Setting.getSetting(Setting.keyAreaMin,
-				MainActivity.this);
-		if (areaMinString.equals("0"))
-		{
-			areaMinString = null;
-		}
-		areaMaxString = Setting.getSetting(Setting.keyAreaMax,
-				MainActivity.this);
-		if (areaMaxString.equals("0"))
-		{
-			areaMaxString = null;
-		}
-		groundTypeString = Setting.getSetting(Setting.keyGroundType,
-				MainActivity.this);
-		if (groundTypeString.equals("0"))
-		{
-			groundTypeString = null;
-		}
-		buildingTypeString = Setting.getSetting(Setting.keyBuildingType,
-				MainActivity.this);
-		if (buildingTypeString.equals("0"))
-		{
-			buildingTypeString = null;
-		}
 
 		new GetCurrentDateTask().execute();
+		
+		linearTitleLayout = (LinearLayout) findViewById(R.id.linear_title);
+		
+		btnFocusButton = (ImageButton) findViewById(R.id.image_btn_focus);
+		btnFocusButton.setOnClickListener(new OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				getLocation(true, 1);
+
+				// if (!mLocationClient.isConnected())
+				// {
+				// mLocationClient.connect();
+				// } else
+				// {
+				// Location currentLocation = mLocationClient
+				// .getLastLocation();
+				// if (currentLocation != null)
+				// {
+				// AppConstants.currentLatLng = new LatLng(currentLocation
+				// .getLatitude(), currentLocation.getLongitude());
+				// } else
+				// {
+				//
+				//
+				// AppConstants.currentLatLng = new LatLng(25.0478,
+				// 121.5172);
+				//
+				// }
+				//
+				// CameraPosition cameraPosition = new CameraPosition.Builder()
+				// .target(AppConstants.currentLatLng).zoom(14).build();
+				// mGoogleMap.animateCamera(CameraUpdateFactory
+				// .newCameraPosition(cameraPosition));
+				// }
+			}
+		});
 
 		mLayoutDataChange = (LinearLayout) findViewById(R.id.layout_data_change);
 		mLayoutDataChange.setOnClickListener(new OnClickListener()
@@ -371,6 +377,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 			double geoLong = address.getLongitude();
 			AppConstants.currentLatLng = new LatLng(geoLat, geoLong);
 
+			addCurrentLocationMarker();
+
 			float mapSize = 15.0f;
 
 			if (0 < km_dis && km_dis <= 0.3)
@@ -424,7 +432,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 			mGoogleMap = ((TransparentSupportMapFragment) getSupportFragmentManager()
 					.findFragmentById(R.id.map)).getMap();
 
-			mGoogleMap.setMyLocationEnabled(true);
+			// mGoogleMap.setMyLocationEnabled(true);
 
 			mGoogleMap
 					.setOnMyLocationButtonClickListener(new OnMyLocationButtonClickListener()
@@ -434,7 +442,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 						public boolean onMyLocationButtonClick()
 						{
 							// TODO Auto-generated method stub
-							getLocation();
+							getLocation(true, 0);
 							return false;
 						}
 					});
@@ -482,8 +490,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 		// initilizeMap();
 		if (isReSearch && mLocationClient.isConnected())
 		{
-			getLocation();
-			isReSearch = false;
+			getLocation(true, 0);
+			// isReSearch = false;
 		}
 	}
 
@@ -500,7 +508,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 		if (!mLocationClient.isConnected())
 		{
 			mLocationClient.connect();
-			isReSearch = false;
+			// isReSearch = false;
 		}
 
 	}
@@ -542,6 +550,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 		{
 			// TODO Auto-generated method stub
 			crawlDateNum = HouseApi.getCurrentCrawlDate();
+			
 			return null;
 		}
 
@@ -593,6 +602,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 		protected void onPreExecute()
 		{
 			super.onPreExecute();
+			linearTitleLayout.setVisibility(View.VISIBLE);
 		}
 
 		@Override
@@ -606,6 +616,43 @@ public class MainActivity extends SherlockFragmentActivity implements
 				// TODO: handle exception
 			}
 
+			String hpMinString = Setting.getSetting(Setting.keyHousePriceMin,
+					MainActivity.this);
+			if (hpMinString.equals("0"))
+			{
+				hpMinString = null;
+			}
+			String hpMaxString = Setting.getSetting(Setting.keyHousePriceMax,
+					MainActivity.this);
+			if (hpMaxString.equals("0"))
+			{
+				hpMaxString = null;
+			}
+			String areaMinString = Setting.getSetting(Setting.keyAreaMin,
+					MainActivity.this);
+			if (areaMinString.equals("0"))
+			{
+				areaMinString = null;
+			}
+			String areaMaxString = Setting.getSetting(Setting.keyAreaMax,
+					MainActivity.this);
+			if (areaMaxString.equals("0"))
+			{
+				areaMaxString = null;
+			}
+			String groundTypeString = Setting.getSetting(Setting.keyGroundType,
+					MainActivity.this);
+			if (groundTypeString.equals("0"))
+			{
+				groundTypeString = null;
+			}
+			String buildingTypeString = Setting.getSetting(
+					Setting.keyBuildingType, MainActivity.this);
+			if (buildingTypeString.equals("0"))
+			{
+				buildingTypeString = null;
+			}
+
 			Datas.mEstates = HouseApi.getAroundAllByAreas(km_dis, center_x,
 					center_y, hpMinString, hpMaxString, areaMinString,
 					areaMaxString, groundTypeString, buildingTypeString);
@@ -616,7 +663,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 		@Override
 		protected void onPostExecute(Void result)
 		{
-
+			linearTitleLayout.setVisibility(View.INVISIBLE);
 			if (Datas.mEstates != null && Datas.mEstates.size() != 0)
 			{
 
@@ -639,6 +686,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private void setMapMark(int pagerPosition)
 	{
 		mGoogleMap.clear();
+
 		String monthKey = Datas.mArrayKey.get(pagerPosition);
 		ArrayList<RealEstate> theEstates = new ArrayList<RealEstate>();
 		theEstates = Datas.mEstatesMap.get(monthKey);
@@ -658,25 +706,32 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 			}
 		}
+		addCurrentLocationMarker();
 
 	}
 
-	private void getLocation()
+	private void getLocation(Boolean isReGetLoc, int aniParam)
 	{
 
 		// If Google Play Services is available
 		if (servicesConnected())
 		{
-			Location currentLocation = mLocationClient.getLastLocation();
-			if (currentLocation != null)
+			if (isReGetLoc)
 			{
-				AppConstants.currentLatLng = new LatLng(
-						currentLocation.getLatitude(),
-						currentLocation.getLongitude());
-			} else
-			{
+				Location currentLocation = mLocationClient.getLastLocation();
+				if (currentLocation != null)
+				{
+					AppConstants.currentLatLng = new LatLng(
+							currentLocation.getLatitude(),
+							currentLocation.getLongitude());
+				} else
+				{
 
-				AppConstants.currentLatLng = new LatLng(25.0478, 121.5172);
+					AppConstants.currentLatLng = new LatLng(25.0478, 121.5172);
+
+				}
+				// add location marker
+				addCurrentLocationMarker();
 
 			}
 
@@ -702,27 +757,40 @@ public class MainActivity extends SherlockFragmentActivity implements
 				mapSize = 12.0f;
 			}
 
-			mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(
-					AppConstants.currentLatLng.latitude,
-					AppConstants.currentLatLng.longitude), mapSize));
-			
-			mGoogleMap.setOnMarkerClickListener( new OnMarkerClickListener()
+			if (aniParam == 0)
 			{
-				
+				mGoogleMap
+						.moveCamera(CameraUpdateFactory.newLatLngZoom(
+								new LatLng(AppConstants.currentLatLng.latitude,
+										AppConstants.currentLatLng.longitude),
+								mapSize));
+			} else
+			{
+				CameraPosition cameraPosition = new CameraPosition.Builder()
+						.target(AppConstants.currentLatLng).zoom(mapSize)
+						.build();
+				mGoogleMap.animateCamera(CameraUpdateFactory
+						.newCameraPosition(cameraPosition));
+			}
+
+			mGoogleMap.setOnMarkerClickListener(new OnMarkerClickListener()
+			{
+
 				@Override
 				public boolean onMarkerClick(Marker marker)
 				{
 					Intent intent = new Intent();
-					String monthKey = Datas.mArrayKey.get(mPager.getCurrentItem());
+					String monthKey = Datas.mArrayKey.get(mPager
+							.getCurrentItem());
 					intent.putExtra("MonthKey", monthKey);
-					intent.putExtra("RowNumber", Integer.valueOf(marker.getTitle()));
+					intent.putExtra("RowNumber",
+							Integer.valueOf(marker.getTitle()));
 					intent.setClass(MainActivity.this, DetailActivity.class);
 					startActivity(intent);
 					return true;
 				}
 			});
-			
-			
+
 			// Taipei Train Station
 			// center_x = 121.5172;
 			// center_y = 25.0478;
@@ -736,12 +804,26 @@ public class MainActivity extends SherlockFragmentActivity implements
 		}
 	}
 
+	private void addCurrentLocationMarker()
+	{
+		// TODO Auto-generated method stub
+		MarkerOptions marker = new MarkerOptions()
+				.position(AppConstants.currentLatLng);
+		marker.icon(BitmapDescriptorFactory
+				.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+		mGoogleMap.addMarker(marker);
+	}
+
 	@Override
 	public void onConnected(Bundle bundle)
 	{
 
 		// if (Datas.mEstates == null || Datas.mEstates.size() == 0)
-		getLocation();
+		if (isReSearch)
+		{
+			getLocation(true, 0);
+			isReSearch = false;
+		}
 
 	}
 
@@ -837,7 +919,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 	@Override
 	public void onStop()
 	{
-
+		super.onStop();
 		// // If the client is connected
 		if (mLocationClient.isConnected())
 		{
@@ -847,8 +929,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 		// // After disconnect() is called, the client is considered "dead".
 		mLocationClient.disconnect();
 		isReSearch = true;
-		
-		super.onStop();
+
 	}
 
 	private void stopPeriodicUpdates()
@@ -950,7 +1031,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 							btnDistance.setText(Double.toString(km_dis) + "km");
 							Setting.saveSetting(Setting.keyKmDistance,
 									Double.toString(km_dis), MainActivity.this);
-							getLocation();
+							getLocation(false, 0);
 						} else
 						{
 							Toast.makeText(MainActivity.this, "半徑不能為0",

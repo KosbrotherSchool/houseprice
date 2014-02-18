@@ -102,6 +102,14 @@ public class DetailActivity extends SherlockFragmentActivity
 	protected void onDestroy()
 	{
 		super.onDestroy();
+		
+	}
+	
+	@Override
+	public void onBackPressed()
+	{
+		// TODO Auto-generated method stub
+		super.onBackPressed();
 		Datas.mDetailEstates.clear();
 		Datas.mLandDatas.clear();
 		Datas.mBuildingDatas.clear();
@@ -129,6 +137,11 @@ public class DetailActivity extends SherlockFragmentActivity
 		{
 		case android.R.id.home:
 			finish();
+			Datas.mDetailEstates.clear();
+			Datas.mLandDatas.clear();
+			Datas.mBuildingDatas.clear();
+			Datas.mParkingDatas.clear();
+			MainActivity.isReSearch = false;
 			return true;
 		case R.id.menu_up:
 			if (mPager.getCurrentItem()>0)

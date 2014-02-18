@@ -29,12 +29,12 @@
                 android:text="還原設定" />
             -->
 
-            <Button
+            <!-- <Button
                 android:id="@+id/button_set_oftenuse"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="設為常用" />
+                android:text="設為常用" /> -->
         </TableRow>
     </TableLayout>
 
