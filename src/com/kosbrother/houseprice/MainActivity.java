@@ -111,9 +111,9 @@ public class MainActivity extends SherlockFragmentActivity implements
 				.valueOf(Setting.getSetting(Setting.keyKmDistance, this));
 
 		new GetCurrentDateTask().execute();
-		
+
 		linearTitleLayout = (LinearLayout) findViewById(R.id.linear_title);
-		
+
 		btnFocusButton = (ImageButton) findViewById(R.id.image_btn_focus);
 		btnFocusButton.setOnClickListener(new OnClickListener()
 		{
@@ -470,14 +470,12 @@ public class MainActivity extends SherlockFragmentActivity implements
 			intent.setClass(MainActivity.this, FilterActivity.class);
 			startActivity(intent);
 			break;
-		// case R.id.menu_query_record:
-		// Toast.makeText(MainActivity.this, "list",
-		// Toast.LENGTH_SHORT).show();
-		// Intent intent = new Intent();
-		// intent.setClass(MainActivity.this, ListActivity.class);
-		// // intent.putExtras(bundle);
-		// startActivity(intent);
-		// break;
+		case R.id.action_share:
+			Intent intent2 = new Intent(Intent.ACTION_SEND);
+			intent2.setType("text/plain");
+			intent2.putExtra(Intent.EXTRA_TEXT, "DownLoad Url");
+			startActivity(Intent.createChooser(intent2, "Share..."));
+			break;
 		}
 
 		return super.onOptionsItemSelected(item);
@@ -492,6 +490,14 @@ public class MainActivity extends SherlockFragmentActivity implements
 		{
 			getLocation(true, 0);
 			// isReSearch = false;
+		}
+
+		Boolean firstString = Setting.getFirstBoolean(MainActivity.this);
+		if (firstString)
+		{
+			Intent intent = new Intent();
+			intent.setClass(MainActivity.this, FilterActivity.class);
+			startActivity(intent);
 		}
 	}
 
@@ -550,7 +556,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 		{
 			// TODO Auto-generated method stub
 			crawlDateNum = HouseApi.getCurrentCrawlDate();
-			
+
 			return null;
 		}
 
@@ -566,9 +572,9 @@ public class MainActivity extends SherlockFragmentActivity implements
 		{
 			int year = crawlDateNum / 100;
 			int month = crawlDateNum % 100;
-			Toast.makeText(MainActivity.this,
-					Integer.toString(year) + "/" + Integer.toString(month),
-					Toast.LENGTH_SHORT).show();
+			// Toast.makeText(MainActivity.this,
+			// Integer.toString(year) + "/" + Integer.toString(month),
+			// Toast.LENGTH_SHORT).show();
 
 			if (month > 4)
 			{
@@ -817,14 +823,15 @@ public class MainActivity extends SherlockFragmentActivity implements
 	@Override
 	public void onConnected(Bundle bundle)
 	{
-
+		Boolean firstBoolean = Setting.getFirstBoolean(MainActivity.this);		
 		// if (Datas.mEstates == null || Datas.mEstates.size() == 0)
-		if (isReSearch)
+		if (isReSearch && !firstBoolean)
 		{
 			getLocation(true, 0);
 			isReSearch = false;
 		}
-
+		
+		
 	}
 
 	@Override

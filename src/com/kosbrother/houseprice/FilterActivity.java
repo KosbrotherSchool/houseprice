@@ -58,12 +58,20 @@ public class FilterActivity extends SherlockFragmentActivity
 
 	private Button buttonSearch;
 //	private Button buttonSetOften;
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_filter);
+		
+		boolean isFirstOpen = Setting.getFirstBoolean(FilterActivity.this);
+		if (isFirstOpen)
+		{
+			Toast.makeText(this, "請先設定搜索條件", Toast.LENGTH_SHORT).show();
+			Setting.setFirstBoolean(FilterActivity.this);
+		}
+		
 		lowHousePriceEditText = (EditText) findViewById(R.id.low_house_price_edit);
 		highHousePriceEditText = (EditText) findViewById(R.id.high_house_price_edit);
 		buttonSearch = (Button) findViewById(R.id.button_search);
@@ -770,5 +778,6 @@ public class FilterActivity extends SherlockFragmentActivity
 		super.onResume();
 		// hideSoftKeyboard();
 	}
+	
 
 }

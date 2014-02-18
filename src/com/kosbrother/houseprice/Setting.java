@@ -17,7 +17,8 @@ public class Setting
 	public final static String keyAreaMin = "Area_Min";
 	public final static String keyAreaMax = "Area_Max";
 	public final static String keyKmDistance = "Km_Distance";
-
+	public final static String keyFirstOpen = "First_Open";
+	
 	public final static String initialPurpose = "0"; // 0 for buy, 1 for sell
 	public final static String initialHousePriceMin = "0"; 
 	public final static String initialHousePriceMax = "0"; //0 for max
@@ -26,6 +27,7 @@ public class Setting
 	public final static String initialAreaMin = "0";
 	public final static String initialAreaMax = "0"; //0 for max
 	public final static String initialKmDistance = "0.5";
+	public final static boolean initialFirstOpen = true;
 	
 	private static final HashMap<String, String> initMap = new HashMap<String, String>()
 	{
@@ -53,4 +55,15 @@ public class Setting
         sharePreference.edit().putString(settingKey, settingValue).commit();
     }
 	
+	
+	public static boolean getFirstBoolean(Context context){
+		 SharedPreferences sharePreference = context.getSharedPreferences(keyPref, 0);
+		 boolean firstBoolean = sharePreference.getBoolean(keyFirstOpen, initialFirstOpen);
+		 return firstBoolean;
+	}
+	
+	public static void setFirstBoolean(Context context){
+		SharedPreferences sharePreference = context.getSharedPreferences(keyPref, 0);
+		sharePreference.edit().putBoolean(keyFirstOpen, false).commit();
+	}
 }
