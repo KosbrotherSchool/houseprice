@@ -29,12 +29,15 @@
                 android:text="還原設定" />
             -->
 
-            <!-- <Button
+
+            <!--
+                 <Button
                 android:id="@+id/button_set_oftenuse"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="設為常用" /> -->
+                android:text="設為常用" />
+            -->
         </TableRow>
     </TableLayout>
 
@@ -43,7 +46,7 @@
         android:layout_height="0dp"
         android:layout_weight="1" >
 
-        <LinearLayout
+       <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" >
@@ -175,11 +178,26 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <TextView
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
-                android:text="房地形態" />
+                android:gravity="center"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:text="房地型態" />
+
+                <ImageView
+                    android:id="@+id/ground_info_image"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="5dp"
+                    android:padding="2dp"
+                    android:src="@drawable/icon_info2" />
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="fill_parent"
@@ -237,12 +255,30 @@
                     android:text="車位" />
             </LinearLayout>
 
-            <TextView
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
-                android:text="建物形態" />
+                android:gravity="center"
+                android:orientation="horizontal" >
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:text="建物型態" />
+                
+                <ImageView
+                    android:id="@+id/build_info_image"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="5dp"
+                    android:padding="2dp"
+                    android:src="@drawable/icon_info2" />
+            </LinearLayout> 
+
+ 
+            
+            
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="0.5dp"

@@ -1,18 +1,21 @@
 package com.kosbrother.houseprice;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.google.android.gms.internal.el;
 
 public class FilterActivity extends SherlockFragmentActivity
 {
@@ -28,7 +31,7 @@ public class FilterActivity extends SherlockFragmentActivity
 
 	private EditText lowHousePriceEditText;
 	private EditText highHousePriceEditText;
-	
+
 	private RadioButton radioBuy;
 	private RadioButton radioSell;
 
@@ -57,25 +60,83 @@ public class FilterActivity extends SherlockFragmentActivity
 	private EditText areaMaxEditText;
 
 	private Button buttonSearch;
-//	private Button buttonSetOften;
-	
+	// private Button buttonSetOften;
+
+	private ImageView groundInfoImageView;
+	private ImageView buildInfoImageView;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_filter);
-		
+
 		boolean isFirstOpen = Setting.getFirstBoolean(FilterActivity.this);
 		if (isFirstOpen)
 		{
 			Toast.makeText(this, "請先設定搜索條件", Toast.LENGTH_SHORT).show();
 			Setting.setFirstBoolean(FilterActivity.this);
 		}
-		
+
 		lowHousePriceEditText = (EditText) findViewById(R.id.low_house_price_edit);
 		highHousePriceEditText = (EditText) findViewById(R.id.high_house_price_edit);
 		buttonSearch = (Button) findViewById(R.id.button_search);
-//		buttonSetOften = (Button) findViewById(R.id.button_set_oftenuse);
+
+		groundInfoImageView = (ImageView) findViewById(R.id.ground_info_image);
+		buildInfoImageView = (ImageView) findViewById(R.id.build_info_image);
+
+		groundInfoImageView.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public void onClick(View arg0)
+			{
+				AlertDialog.Builder dialog = new AlertDialog.Builder(
+						FilterActivity.this);
+				
+				LayoutInflater inflater = FilterActivity.this.getLayoutInflater();
+				
+				dialog.setTitle("房地型態(可復選)");
+				dialog.setView(inflater.inflate(R.layout.dialog_ground_info, null));
+				dialog.setPositiveButton("確定",
+						new DialogInterface.OnClickListener()
+						{
+							public void onClick(
+									DialogInterface dialoginterface, int i)
+							{
+								
+							}
+						});
+				dialog.show();
+
+			}
+		});
+
+		buildInfoImageView.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public void onClick(View v)
+			{
+				AlertDialog.Builder dialog = new AlertDialog.Builder(
+						FilterActivity.this);
+				
+				LayoutInflater inflater = FilterActivity.this.getLayoutInflater();
+				dialog.setTitle("建物型態(可復選)");
+				dialog.setView(inflater.inflate(R.layout.dialog_build_info, null));
+				dialog.setPositiveButton("確定",
+						new DialogInterface.OnClickListener()
+						{
+							public void onClick(
+									DialogInterface dialoginterface, int i)
+							{
+								
+							}
+						});
+				dialog.show();
+
+			}
+		});
 
 		buttonSearch.setOnClickListener(new View.OnClickListener()
 		{
@@ -83,146 +144,6 @@ public class FilterActivity extends SherlockFragmentActivity
 			public void onClick(View v)
 			{
 				MainActivity.isReSearch = true;
-				// low house price
-//				if (!lowHousePriceEditText.getText().toString().equals(""))
-//				{
-//					MainActivity.hpMinString = lowHousePriceEditText.getText().toString();
-//				}
-//
-//				// high house price
-//				if (!highHousePriceEditText.getText().toString().equals(""))
-//				{
-//					MainActivity.hpMaxString = highHousePriceEditText.getText().toString();
-//				}
-//				
-//				
-//				// ground type
-//				String valueGroundType = "";
-//				if (ground_type_0.isChecked())
-//				{
-//					valueGroundType = "0";
-//				} else
-//				{
-//					if (ground_type_1.isChecked())
-//					{
-//						valueGroundType = valueGroundType + "1";
-//					}
-//					if (ground_type_2.isChecked())
-//					{
-//						valueGroundType = valueGroundType + "2";
-//					}
-//					if (ground_type_3.isChecked())
-//					{
-//						valueGroundType = valueGroundType + "3";
-//					}
-//					if (ground_type_4.isChecked())
-//					{
-//						valueGroundType = valueGroundType + "4";
-//					}
-//					if (ground_type_5.isChecked())
-//					{
-//						valueGroundType = valueGroundType + "5";
-//					}
-//				}
-//
-//				if (valueGroundType.equals(""))
-//				{
-//					Toast.makeText(FilterActivity.this, "請選擇房地形態", Toast.LENGTH_SHORT).show();
-//				} else
-//				{
-//					MainActivity.groundTypeString = valueGroundType;
-//				}
-//
-//				// buiding type
-//				String valueBuildingType = "";
-//				if (building_type_0.isChecked())
-//				{
-//					valueBuildingType = "0";
-//				} else
-//				{
-//
-//					if (building_type_a.isChecked())
-//					{
-//						valueBuildingType = valueBuildingType + "a";
-//					}
-//					
-//					if (building_type_b.isChecked())
-//					{
-//						valueBuildingType = valueBuildingType + "b";
-//					}
-//					
-//					if (building_type_c.isChecked())
-//					{
-//						valueBuildingType = valueBuildingType + "c";
-//					}
-//					
-//					if (building_type_d.isChecked())
-//					{
-//						valueBuildingType = valueBuildingType + "d";
-//					}
-//					
-//					if (building_type_e.isChecked())
-//					{
-//						valueBuildingType = valueBuildingType + "e";
-//					}
-//					
-//					if (building_type_f.isChecked())
-//					{
-//						valueBuildingType = valueBuildingType + "f";
-//					}
-//					
-//					if (building_type_g.isChecked())
-//					{
-//						valueBuildingType = valueBuildingType + "g";
-//					}
-//					
-//					if (building_type_h.isChecked())
-//					{
-//						valueBuildingType = valueBuildingType + "h";
-//					}
-//					
-//					if (building_type_i.isChecked())
-//					{
-//						valueBuildingType = valueBuildingType + "i";
-//					}
-//					
-//					if (building_type_j.isChecked())
-//					{
-//						valueBuildingType = valueBuildingType + "j";
-//					}
-//					
-//					if (building_type_k.isChecked())
-//					{
-//						valueBuildingType = valueBuildingType + "k";
-//					}
-//					
-//					if (building_type_l.isChecked())
-//					{
-//						valueBuildingType = valueBuildingType + "l";
-//					}
-//				}
-//				
-//				if (valueBuildingType.equals(""))
-//				{
-//					Toast.makeText(FilterActivity.this, "請選擇建物形態", Toast.LENGTH_SHORT).show();
-//				}else {
-//					MainActivity.buildingTypeString = valueBuildingType;
-//				}
-//				
-//				// min square price
-//				if (areaMinEditText.getText().toString().equals("")){
-//					
-//				}else {
-//					MainActivity.areaMinString = areaMinEditText.getText().toString();
-//				}
-//				
-//				// max square price
-//				if (areaMaxEditText.getText().toString().equals(""))
-//				{
-//					
-//				}else {
-//					MainActivity.areaMaxString = areaMaxEditText.getText().toString();
-//				}
 				// purpose
 				String valuePurpose = "";
 				if (radioBuy.isChecked())
@@ -232,21 +153,25 @@ public class FilterActivity extends SherlockFragmentActivity
 				{
 					valuePurpose = "1";
 				}
-				Setting.saveSetting(Setting.keyPurpose, valuePurpose, FilterActivity.this);
+				Setting.saveSetting(Setting.keyPurpose, valuePurpose,
+						FilterActivity.this);
 
 				// low house price
 				if (!lowHousePriceEditText.getText().toString().equals(""))
 				{
-					Setting.saveSetting(Setting.keyHousePriceMin, lowHousePriceEditText.getText().toString(), FilterActivity.this);
+					Setting.saveSetting(Setting.keyHousePriceMin,
+							lowHousePriceEditText.getText().toString(),
+							FilterActivity.this);
 				}
 
 				// high house price
 				if (!highHousePriceEditText.getText().toString().equals(""))
 				{
-					Setting.saveSetting(Setting.keyHousePriceMax, highHousePriceEditText.getText().toString(), FilterActivity.this);
+					Setting.saveSetting(Setting.keyHousePriceMax,
+							highHousePriceEditText.getText().toString(),
+							FilterActivity.this);
 				}
-				
-				
+
 				// ground type
 				String valueGroundType = "";
 				if (ground_type_0.isChecked())
@@ -278,10 +203,12 @@ public class FilterActivity extends SherlockFragmentActivity
 
 				if (valueGroundType.equals(""))
 				{
-					Toast.makeText(FilterActivity.this, "請選擇房地形態", Toast.LENGTH_SHORT).show();
+					Toast.makeText(FilterActivity.this, "請選擇房地形態",
+							Toast.LENGTH_SHORT).show();
 				} else
 				{
-					Setting.saveSetting(Setting.keyGroundType, valueGroundType, FilterActivity.this);
+					Setting.saveSetting(Setting.keyGroundType, valueGroundType,
+							FilterActivity.this);
 				}
 
 				// buiding type
@@ -296,248 +223,96 @@ public class FilterActivity extends SherlockFragmentActivity
 					{
 						valueBuildingType = valueBuildingType + "a";
 					}
-					
+
 					if (building_type_b.isChecked())
 					{
 						valueBuildingType = valueBuildingType + "b";
 					}
-					
+
 					if (building_type_c.isChecked())
 					{
 						valueBuildingType = valueBuildingType + "c";
 					}
-					
+
 					if (building_type_d.isChecked())
 					{
 						valueBuildingType = valueBuildingType + "d";
 					}
-					
+
 					if (building_type_e.isChecked())
 					{
 						valueBuildingType = valueBuildingType + "e";
 					}
-					
+
 					if (building_type_f.isChecked())
 					{
 						valueBuildingType = valueBuildingType + "f";
 					}
-					
+
 					if (building_type_g.isChecked())
 					{
 						valueBuildingType = valueBuildingType + "g";
 					}
-					
+
 					if (building_type_h.isChecked())
 					{
 						valueBuildingType = valueBuildingType + "h";
 					}
-					
+
 					if (building_type_i.isChecked())
 					{
 						valueBuildingType = valueBuildingType + "i";
 					}
-					
+
 					if (building_type_j.isChecked())
 					{
 						valueBuildingType = valueBuildingType + "j";
 					}
-					
+
 					if (building_type_k.isChecked())
 					{
 						valueBuildingType = valueBuildingType + "k";
 					}
-					
+
 					if (building_type_l.isChecked())
 					{
 						valueBuildingType = valueBuildingType + "l";
 					}
 				}
-				
+
 				if (valueBuildingType.equals(""))
 				{
-					Toast.makeText(FilterActivity.this, "請選擇建物形態", Toast.LENGTH_SHORT).show();
-				}else {
-					Setting.saveSetting(Setting.keyBuildingType, valueBuildingType, FilterActivity.this);
+					Toast.makeText(FilterActivity.this, "請選擇建物形態",
+							Toast.LENGTH_SHORT).show();
+				} else
+				{
+					Setting.saveSetting(Setting.keyBuildingType,
+							valueBuildingType, FilterActivity.this);
 				}
-				
+
 				// min square price
-				if (areaMinEditText.getText().toString().equals("")){
-					
-				}else {
-					Setting.saveSetting(Setting.keyAreaMin, areaMinEditText.getText().toString(), FilterActivity.this);
+				if (areaMinEditText.getText().toString().equals(""))
+				{
+
+				} else
+				{
+					Setting.saveSetting(Setting.keyAreaMin, areaMinEditText
+							.getText().toString(), FilterActivity.this);
 				}
-				
+
 				// max square price
 				if (areaMaxEditText.getText().toString().equals(""))
 				{
-					
-				}else {
-					Setting.saveSetting(Setting.keyAreaMax, areaMaxEditText.getText().toString(), FilterActivity.this);
+
+				} else
+				{
+					Setting.saveSetting(Setting.keyAreaMax, areaMaxEditText
+							.getText().toString(), FilterActivity.this);
 				}
-				
+
 				finish();
 			}
 		});
-
-//		buttonSetOften.setOnClickListener(new View.OnClickListener()
-//		{
-//			@Override
-//			public void onClick(View v)
-//			{
-//				// purpose
-//				String valuePurpose = "";
-//				if (radioBuy.isChecked())
-//				{
-//					valuePurpose = "0";
-//				} else
-//				{
-//					valuePurpose = "1";
-//				}
-//				Setting.saveSetting(Setting.keyPurpose, valuePurpose, FilterActivity.this);
-//
-//				// low house price
-//				if (!lowHousePriceEditText.getText().toString().equals(""))
-//				{
-//					Setting.saveSetting(Setting.keyHousePriceMin, lowHousePriceEditText.getText().toString(), FilterActivity.this);
-//				}
-//
-//				// high house price
-//				if (!highHousePriceEditText.getText().toString().equals(""))
-//				{
-//					Setting.saveSetting(Setting.keyHousePriceMax, highHousePriceEditText.getText().toString(), FilterActivity.this);
-//				}
-//				
-//				
-//				// ground type
-//				String valueGroundType = "";
-//				if (ground_type_0.isChecked())
-//				{
-//					valueGroundType = "0";
-//				} else
-//				{
-//					if (ground_type_1.isChecked())
-//					{
-//						valueGroundType = valueGroundType + "1";
-//					}
-//					if (ground_type_2.isChecked())
-//					{
-//						valueGroundType = valueGroundType + "2";
-//					}
-//					if (ground_type_3.isChecked())
-//					{
-//						valueGroundType = valueGroundType + "3";
-//					}
-//					if (ground_type_4.isChecked())
-//					{
-//						valueGroundType = valueGroundType + "4";
-//					}
-//					if (ground_type_5.isChecked())
-//					{
-//						valueGroundType = valueGroundType + "5";
-//					}
-//				}
-//
-//				if (valueGroundType.equals(""))
-//				{
-//					Toast.makeText(FilterActivity.this, "請選擇房地形態", Toast.LENGTH_SHORT).show();
-//				} else
-//				{
-//					Setting.saveSetting(Setting.keyGroundType, valueGroundType, FilterActivity.this);
-//				}
-//
-//				// buiding type
-//				String valueBuildingType = "";
-//				if (building_type_0.isChecked())
-//				{
-//					valueBuildingType = "0";
-//				} else
-//				{
-//
-//					if (building_type_a.isChecked())
-//					{
-//						valueBuildingType = valueBuildingType + "a";
-//					}
-//					
-//					if (building_type_b.isChecked())
-//					{
-//						valueBuildingType = valueBuildingType + "b";
-//					}
-//					
-//					if (building_type_c.isChecked())
-//					{
-//						valueBuildingType = valueBuildingType + "c";
-//					}
-//					
-//					if (building_type_d.isChecked())
-//					{
-//						valueBuildingType = valueBuildingType + "d";
-//					}
-//					
-//					if (building_type_e.isChecked())
-//					{
-//						valueBuildingType = valueBuildingType + "e";
-//					}
-//					
-//					if (building_type_f.isChecked())
-//					{
-//						valueBuildingType = valueBuildingType + "f";
-//					}
-//					
-//					if (building_type_g.isChecked())
-//					{
-//						valueBuildingType = valueBuildingType + "g";
-//					}
-//					
-//					if (building_type_h.isChecked())
-//					{
-//						valueBuildingType = valueBuildingType + "h";
-//					}
-//					
-//					if (building_type_i.isChecked())
-//					{
-//						valueBuildingType = valueBuildingType + "i";
-//					}
-//					
-//					if (building_type_j.isChecked())
-//					{
-//						valueBuildingType = valueBuildingType + "j";
-//					}
-//					
-//					if (building_type_k.isChecked())
-//					{
-//						valueBuildingType = valueBuildingType + "k";
-//					}
-//					
-//					if (building_type_l.isChecked())
-//					{
-//						valueBuildingType = valueBuildingType + "l";
-//					}
-//				}
-//				
-//				if (valueBuildingType.equals(""))
-//				{
-//					Toast.makeText(FilterActivity.this, "請選擇建物形態", Toast.LENGTH_SHORT).show();
-//				}else {
-//					Setting.saveSetting(Setting.keyBuildingType, valueBuildingType, FilterActivity.this);
-//				}
-//				
-//				// min square price
-//				if (areaMinEditText.getText().toString().equals("")){
-//					
-//				}else {
-//					Setting.saveSetting(Setting.keyAreaMin, areaMinEditText.getText().toString(), FilterActivity.this);
-//				}
-//				
-//				// max square price
-//				if (areaMaxEditText.getText().toString().equals(""))
-//				{
-//					
-//				}else {
-//					Setting.saveSetting(Setting.keyAreaMax, areaMaxEditText.getText().toString(), FilterActivity.this);
-//				}
-//				
-//			}
-//		});
 
 		radioBuy = (RadioButton) findViewById(R.id.radio_buy);
 		radioSell = (RadioButton) findViewById(R.id.radio_sell);
@@ -570,9 +345,11 @@ public class FilterActivity extends SherlockFragmentActivity
 		mActionBar.setTitle("房價報報---搜索設定");
 
 		stringPurpose = Setting.getSetting(Setting.keyPurpose, this);
-		minHousePriceString = Setting.getSetting(Setting.keyHousePriceMin, this);
-		maxHousePriceString = Setting.getSetting(Setting.keyHousePriceMax, this);
-		
+		minHousePriceString = Setting
+				.getSetting(Setting.keyHousePriceMin, this);
+		maxHousePriceString = Setting
+				.getSetting(Setting.keyHousePriceMax, this);
+
 		stringGroundType = Setting.getSetting(Setting.keyGroundType, this);
 		stringBuildingType = Setting.getSetting(Setting.keyBuildingType, this);
 		areaMinString = Setting.getSetting(Setting.keyAreaMin, this);
@@ -593,14 +370,15 @@ public class FilterActivity extends SherlockFragmentActivity
 		{
 			lowHousePriceEditText.setText(minHousePriceString);
 		}
-		
+
 		if (maxHousePriceString.equals("0"))
 		{
 			// do nothing
-		}else {
+		} else
+		{
 			highHousePriceEditText.setText(maxHousePriceString);
 		}
-		
+
 		if (stringGroundType.equals("0"))
 		{
 			ground_type_0.setChecked(true);
@@ -754,7 +532,8 @@ public class FilterActivity extends SherlockFragmentActivity
 		if (getCurrentFocus() != null)
 		{
 			InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-			inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+			inputMethodManager.hideSoftInputFromWindow(getCurrentFocus()
+					.getWindowToken(), 0);
 		}
 		// InputMethodManager imm = (InputMethodManager)
 		// getSystemService(INPUT_METHOD_SERVICE);
@@ -778,6 +557,5 @@ public class FilterActivity extends SherlockFragmentActivity
 		super.onResume();
 		// hideSoftKeyboard();
 	}
-	
 
 }
