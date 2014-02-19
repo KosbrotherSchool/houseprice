@@ -159,7 +159,7 @@
         <LinearLayout
             android:id="@+id/layout_data_change"
             android:layout_width="fill_parent"
-            android:layout_height="30dp"
+            android:layout_height="36dp"
             android:background="@drawable/laytout_data_selector"
             android:gravity="center" >
 
@@ -170,8 +170,8 @@
                 android:textColor="#FFFFFF" />
 
             <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:background="@drawable/icon_down_white" />
         </LinearLayout>
 
@@ -187,14 +187,15 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:orientation="vertical" >
-
+				
                 <TabWidget
                     android:id="@android:id/tabs"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="0"
                     android:orientation="horizontal" />
-
+				            
+                
                 <FrameLayout
                     android:id="@android:id/tabcontent"
                     android:layout_width="0dp"
@@ -206,15 +207,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1" />
+				
+                <!-- <RelativeLayout
+                    android:id="@+id/adLayout"
+                    android:layout_width="fill_parent"
+                    android:layout_height="50dp" >
+                </RelativeLayout> -->
+                
             </LinearLayout>
         </android.support.v4.app.FragmentTabHost>
     </LinearLayout>
-
-    <RelativeLayout
-        android:id="@+id/adLayout"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true" >
-    </RelativeLayout>
 
 </LinearLayout>

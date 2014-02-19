@@ -1134,7 +1134,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private void CallAds()
 	{
 
-		adBannerLayout = (RelativeLayout) findViewById(R.id.adLayout);
+		adBannerLayout = (RelativeLayout)findViewById(R.id.adLayout);
+		
 		final AdRequest adReq = new AdRequest.Builder().build();
 
 		// 12-18 17:01:12.438: I/Ads(8252): Use

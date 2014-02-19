@@ -11,13 +11,19 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
 import com.kosbrother.houseprice.AppConstants;
 import com.kosbrother.houseprice.Datas;
 import com.kosbrother.houseprice.DetailActivity;
+import com.kosbrother.houseprice.MainActivity;
 import com.kosbrother.houseprice.R;
 import com.kosbrother.houseprice.api.InfoParserApi;
 import com.kosbrother.houseprice.entity.RealEstate;
@@ -37,7 +43,10 @@ public class BreiefFragment extends Fragment
 	private int rowHight = 0; 
 	
 	// private static BreiefFragment mBreiefFragment;
-
+	private RelativeLayout adBannerLayout;
+	private AdView adMobAdView;
+	
+	
 	public static BreiefFragment newInstance(int position)
 	{
 		BreiefFragment f = new BreiefFragment();
@@ -62,7 +71,11 @@ public class BreiefFragment extends Fragment
 		detailTableLayout = (TableLayout) v.findViewById(R.id.detail_talble);
 		Bundle bundle = getArguments();
 		mPosition = bundle.getInt("num");
-
+		
+		adBannerLayout = (RelativeLayout) v.findViewById(R.id.adLayout);
+		
+		CallAds();
+		
 		return v;
 	}
 
@@ -72,7 +85,42 @@ public class BreiefFragment extends Fragment
 		super.onActivityCreated(savedInstanceState);
 
 	}
+	
+	private void CallAds()
+	{
 
+		
+		final AdRequest adReq = new AdRequest.Builder().build();
+
+		// 12-18 17:01:12.438: I/Ads(8252): Use
+		// AdRequest.Builder.addTestDevice("A25819A64B56C65500038B8A9E7C19DD")
+		// to get test ads on this device.
+
+		adMobAdView = new AdView(getActivity());
+		adMobAdView.setAdSize(AdSize.SMART_BANNER);
+		adMobAdView.setAdUnitId(AppConstants.MEDIATION_KEY);
+
+		adMobAdView.loadAd(adReq);
+		adMobAdView.setAdListener(new AdListener()
+		{
+			@Override
+			public void onAdLoaded() {
+				adBannerLayout.setVisibility(View.VISIBLE);
+				if (adBannerLayout.getChildAt(0)!=null)
+				{
+					adBannerLayout.removeViewAt(0);
+				}
+				adBannerLayout.addView(adMobAdView);
+			}
+			
+			public void onAdFailedToLoad(int errorCode) {
+				adBannerLayout.setVisibility(View.GONE);
+			}
+			
+		});	
+	}
+	
+	
 	public boolean changeToDetailView()
 	{
 		if (layoutBrief.getVisibility() == View.VISIBLE)
