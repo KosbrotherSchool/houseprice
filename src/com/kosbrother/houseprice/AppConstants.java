@@ -21,7 +21,7 @@ public class AppConstants
 	public static double saleAreaMax = 0;
 	public static LatLng currentLatLng;
 	
-	public static final String MEDIATION_KEY = "3fa92baa5f514278";
+	public static final String MEDIATION_KEY = "b16046ed293b4d7d";
 	
 	
 	public static float convertDpToPixel(float dp, Context context)

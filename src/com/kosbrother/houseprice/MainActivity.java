@@ -8,6 +8,8 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -26,6 +28,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -33,6 +36,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
@@ -41,6 +45,10 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -101,7 +109,12 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 	private ImageButton btnFocusButton;
 	private LinearLayout linearTitleLayout;
-
+	
+	private LayoutInflater inflater;
+	
+	private RelativeLayout adBannerLayout;
+	private AdView adMobAdView;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -111,7 +124,9 @@ public class MainActivity extends SherlockFragmentActivity implements
 				.valueOf(Setting.getSetting(Setting.keyKmDistance, this));
 
 		new GetCurrentDateTask().execute();
-
+		
+		inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+		
 		linearTitleLayout = (LinearLayout) findViewById(R.id.linear_title);
 
 		btnFocusButton = (ImageButton) findViewById(R.id.image_btn_focus);
@@ -352,7 +367,9 @@ public class MainActivity extends SherlockFragmentActivity implements
 		{
 			e.printStackTrace();
 		}
-
+		
+//		CallAds();
+		
 	}
 
 	private void searchLocation()
@@ -708,21 +725,72 @@ public class MainActivity extends SherlockFragmentActivity implements
 		{
 			for (int i = 0; i < theEstates.size(); i++)
 			{
+				
+				
 				LatLng newLatLng = new LatLng(theEstates.get(i).y_lat,
 						theEstates.get(i).x_long);
+				
+				View layout = inflater.inflate(R.layout.item_marker, null);
+				layout.setLayoutParams(new LinearLayout.LayoutParams(
+						LinearLayout.LayoutParams.WRAP_CONTENT,
+						LinearLayout.LayoutParams.WRAP_CONTENT));
+				ImageView markerView = (ImageView) layout.findViewById(R.id.image_marker);
+				TextView markerText = (TextView) layout.findViewById(R.id.text_marker_price);
 
-				MarkerOptions marker = new MarkerOptions().position(newLatLng)
-						.title(Integer.toString(i));
-				marker.icon(BitmapDescriptorFactory
-						.fromResource(R.drawable.marker_sale));
+				// for later marker info window use
+				MarkerOptions marker = new MarkerOptions().position(newLatLng).title(
+						Integer.toString(i));
+				markerText.setText(Double.toString(theEstates.get(i).square_price));
+
+				markerView.setImageResource(R.drawable.marker_sale);
+			
+				
+
+				Bitmap bm = loadBitmapFromView(layout);
+
+				// Changing marker icon
+				marker.icon(BitmapDescriptorFactory.fromBitmap(bm));
+				
 				mGoogleMap.addMarker(marker);
 
 			}
+			
+//			for (int i = 0; i < theEstates.size(); i++)
+//			{
+//				LatLng newLatLng = new LatLng(theEstates.get(i).y_lat,
+//						theEstates.get(i).x_long);
+//
+//				MarkerOptions marker = new MarkerOptions().position(newLatLng);
+//				marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_sale));
+//				mGoogleMap.addMarker(marker);
+//
+//			}
 		}
 		addCurrentLocationMarker();
 
 	}
+	
+	public static Bitmap loadBitmapFromView(View v)
+	{
+		if (v.getMeasuredHeight() <= 0)
+		{
+			v.measure(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+			Bitmap b = Bitmap.createBitmap(v.getMeasuredWidth(), v.getMeasuredHeight(),
+					Bitmap.Config.ARGB_8888);
+			Canvas c = new Canvas(b);
+			v.layout(0, 0, v.getMeasuredWidth(), v.getMeasuredHeight());
+			v.draw(c);
+			return b;
+		}
 
+		Bitmap b = Bitmap.createBitmap(v.getLayoutParams().width, v.getLayoutParams().height,
+				Bitmap.Config.ARGB_8888);
+		Canvas c = new Canvas(b);
+		v.layout(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
+		v.draw(c);
+		return b;
+	}
+	
 	private void getLocation(Boolean isReGetLoc, int aniParam)
 	{
 
@@ -1061,6 +1129,40 @@ public class MainActivity extends SherlockFragmentActivity implements
 					}
 				});
 		editDialog.show();
+	}
+	
+	private void CallAds()
+	{
+
+		adBannerLayout = (RelativeLayout) findViewById(R.id.adLayout);
+		final AdRequest adReq = new AdRequest.Builder().build();
+
+		// 12-18 17:01:12.438: I/Ads(8252): Use
+		// AdRequest.Builder.addTestDevice("A25819A64B56C65500038B8A9E7C19DD")
+		// to get test ads on this device.
+
+		adMobAdView = new AdView(MainActivity.this);
+		adMobAdView.setAdSize(AdSize.SMART_BANNER);
+		adMobAdView.setAdUnitId(AppConstants.MEDIATION_KEY);
+
+		adMobAdView.loadAd(adReq);
+		adMobAdView.setAdListener(new AdListener()
+		{
+			@Override
+			public void onAdLoaded() {
+				adBannerLayout.setVisibility(View.VISIBLE);
+				if (adBannerLayout.getChildAt(0)!=null)
+				{
+					adBannerLayout.removeViewAt(0);
+				}
+				adBannerLayout.addView(adMobAdView);
+			}
+			
+			public void onAdFailedToLoad(int errorCode) {
+				adBannerLayout.setVisibility(View.GONE);
+			}
+			
+		});	
 	}
 
 }

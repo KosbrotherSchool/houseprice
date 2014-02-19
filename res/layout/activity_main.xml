@@ -3,18 +3,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:weightSum="12" >
+    android:weightSum="11" >
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="0dp"
+        android:layout_height="48dp"
         android:background="@drawable/bg3"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingBottom="5dp"
-        android:paddingTop="5dp"
-        android:layout_weight="1"
-         >
+        android:paddingTop="5dp" >
 
         <Button
             android:id="@+id/button_distance"
@@ -211,5 +209,12 @@
             </LinearLayout>
         </android.support.v4.app.FragmentTabHost>
     </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/adLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" >
+    </RelativeLayout>
 
 </LinearLayout>
