@@ -90,9 +90,10 @@ public class BreiefFragment extends Fragment
 
 	public void addDetailViews()
 	{	
+	
 		detailTableLayout.removeAllViews();
 		ArrayList<RealEstate> theEstates = new ArrayList<RealEstate>();
-		theEstates = Datas.mEstatesMap.get(Datas.mArrayKey.get(mPosition));
+		theEstates = Datas.mEstatesMap.get(Datas.getKeyByPosition(mPosition));
 
 		for (int i = 0; i < theEstates.size(); i++)
 		{
@@ -195,8 +196,8 @@ public class BreiefFragment extends Fragment
 		// get data, and last month data
 		// ArrayList<RealEstate> theEstates = new ArrayList<RealEstate>();
 		// theEstates = Datas.mEstatesMap.get(Datas.mArrayKey.get(mPosition));
-
-		String monthKey = Datas.mArrayKey.get(mPosition);
+		
+		String monthKey = Datas.getKeyByPosition(mPosition);
 
 		int itemNums = Datas.getMonthEstatesNum(monthKey);
 		textEstateItemNums.setText(Integer.toString(itemNums) + "筆");
@@ -220,7 +221,8 @@ public class BreiefFragment extends Fragment
 
 		try
 		{
-			String lastMonthKey = Datas.mArrayKey.get(mPosition + 1);
+			
+			String lastMonthKey = Datas.getKeyByPosition(mPosition-1);
 			double percentChange = Datas.getSquarePriceChange(monthKey, lastMonthKey);
 			if (percentChange > 1)
 			{
@@ -234,7 +236,9 @@ public class BreiefFragment extends Fragment
 				{
 					textSquarePriceChange.setText("漲" + percentString + "%");
 				}
-			} else
+			} else if (percentChange == 0) {
+				textSquarePriceChange.setText("漲0%");
+			}else
 			{
 				percentChange = (1 - percentChange) * 100;
 				String percentString = Double.toString(percentChange);

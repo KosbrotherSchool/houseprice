@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.TreeMap;
 
+import android.R.integer;
+
 import com.kosbrother.houseprice.entity.BuildingData;
 import com.kosbrother.houseprice.entity.LandData;
 import com.kosbrother.houseprice.entity.ParkingData;
@@ -16,12 +18,18 @@ public class Datas
 	public static ArrayList<RealEstate> mEstates = new ArrayList<RealEstate>();
 	public static TreeMap<String, ArrayList<RealEstate>> mEstatesMap;
 	public static ArrayList<String> mArrayKey = new ArrayList<String>();
-	
+
 	public static ArrayList<ParkingData> mParkingDatas = new ArrayList<ParkingData>();
 	public static ArrayList<BuildingData> mBuildingDatas = new ArrayList<BuildingData>();
 	public static ArrayList<LandData> mLandDatas = new ArrayList<LandData>();
-	public static ArrayList<RealEstate> mDetailEstates =  new ArrayList<RealEstate>();
-	
+	public static ArrayList<RealEstate> mDetailEstates = new ArrayList<RealEstate>();
+
+	public static String getKeyByPosition(int position)
+	{
+		int num = (mArrayKey.size() - 1) - position;
+		return mArrayKey.get(num);
+	};
+
 	public static class SquarePriceComparator implements Comparator<RealEstate>
 	{
 

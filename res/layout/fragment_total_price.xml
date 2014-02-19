@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg2"
     android:orientation="vertical" >
-    
 
     <TableLayout
         android:layout_width="fill_parent"
@@ -26,20 +26,13 @@
                 android:text="" />
 
             <TextView
-                android:id="@+id/text_month_1"
+                android:id="@+id/text_month_4"
                 android:layout_width="0dp"
                 android:layout_height="20dp"
                 android:layout_weight="1"
                 android:gravity="center_horizontal|top"
-                android:text="102/8" />
-
-            <TextView
-                android:id="@+id/text_month_2"
-                android:layout_width="0dp"
-                android:layout_height="20dp"
-                android:layout_weight="1"
-                android:gravity="center_horizontal|top"
-                android:text="102/9" />
+                android:text="102/11"
+                android:textColor="@color/white" />
 
             <TextView
                 android:id="@+id/text_month_3"
@@ -47,54 +40,41 @@
                 android:layout_height="20dp"
                 android:layout_weight="1"
                 android:gravity="center_horizontal|top"
-                android:text="102/10" />
+                android:text="102/10"
+                android:textColor="@color/white" />
 
             <TextView
-                android:id="@+id/text_month_4"
+                android:id="@+id/text_month_2"
                 android:layout_width="0dp"
                 android:layout_height="20dp"
                 android:layout_weight="1"
                 android:gravity="center_horizontal|top"
-                android:text="102/11" />
+                android:text="102/9"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:id="@+id/text_month_1"
+                android:layout_width="0dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:gravity="center_horizontal|top"
+                android:text="102/8"
+                android:textColor="@color/white" />
         </TableRow>
 
         <TableRow
             android:id="@+id/tableRow2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            >
+            android:gravity="center_horizontal" >
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="20dp"
                 android:layout_weight="1"
                 android:gravity="center_horizontal|top"
-                android:text="最高價" />
-
-            <TextView
-                android:id="@+id/text_high_price_1"
-                android:layout_width="0dp"
-                android:layout_height="20dp"
-                android:layout_weight="1"
-                android:gravity="center_horizontal|top"
-                android:text="2345萬" />
-
-            <TextView
-                android:id="@+id/text_high_price_2"
-                android:layout_width="0dp"
-                android:layout_height="20dp"
-                android:layout_weight="1"
-                android:gravity="center_horizontal|top"
-                android:text="1399萬" />
-
-            <TextView
-                android:id="@+id/text_high_price_3"
-                android:layout_width="0dp"
-                android:layout_height="20dp"
-                android:layout_weight="1"
-                android:gravity="center_horizontal|top"
-                android:text="2345萬" />
+                android:text="最高價"
+                android:textColor="@color/white" />
 
             <TextView
                 android:id="@+id/text_high_price_4"
@@ -102,46 +82,50 @@
                 android:layout_height="20dp"
                 android:layout_weight="1"
                 android:gravity="center_horizontal|top"
-                android:text="1673萬" />
+                android:text="1673萬"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:id="@+id/text_high_price_3"
+                android:layout_width="0dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:gravity="center_horizontal|top"
+                android:text="2345萬"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:id="@+id/text_high_price_2"
+                android:layout_width="0dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:gravity="center_horizontal|top"
+                android:text="1399萬"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:id="@+id/text_high_price_1"
+                android:layout_width="0dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:gravity="center_horizontal|top"
+                android:text="2345萬"
+                android:textColor="@color/white" />
         </TableRow>
-        
+
         <TableRow
             android:id="@+id/tableRow3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            >
+            android:gravity="center_horizontal" >
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="20dp"
                 android:layout_weight="1"
                 android:gravity="center_horizontal|top"
-                android:text="平均價" />
-
-            <TextView
-                android:id="@+id/text_avg_price_1"
-                android:layout_width="0dp"
-                android:layout_height="20dp"
-                android:layout_weight="1"
-                android:gravity="center_horizontal|top"
-                android:text="889萬" />
-
-            <TextView
-                android:id="@+id/text_avg_price_2"
-                android:layout_width="0dp"
-                android:layout_height="20dp"
-                android:layout_weight="1"
-                android:gravity="center_horizontal|top"
-                android:text="1023萬" />
-
-            <TextView
-                android:id="@+id/text_avg_price_3"
-                android:layout_width="0dp"
-                android:layout_height="20dp"
-                android:layout_weight="1"
-                android:gravity="center_horizontal|top"
-                android:text="2424萬" />
+                android:text="平均價"
+                android:textColor="@color/white" />
 
             <TextView
                 android:id="@+id/text_avg_price_4"
@@ -149,47 +133,50 @@
                 android:layout_height="20dp"
                 android:layout_weight="1"
                 android:gravity="center_horizontal|top"
-                android:text="1334萬" />
+                android:text="1334萬"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:id="@+id/text_avg_price_3"
+                android:layout_width="0dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:gravity="center_horizontal|top"
+                android:text="2424萬"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:id="@+id/text_avg_price_2"
+                android:layout_width="0dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:gravity="center_horizontal|top"
+                android:text="1023萬"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:id="@+id/text_avg_price_1"
+                android:layout_width="0dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:gravity="center_horizontal|top"
+                android:text="889萬"
+                android:textColor="@color/white" />
         </TableRow>
-     
-           
+
         <TableRow
             android:id="@+id/tableRow3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            >
+            android:gravity="center_horizontal" >
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="20dp"
                 android:layout_weight="1"
                 android:gravity="center_horizontal|top"
-                android:text="最低價" />
-
-            <TextView
-                android:id="@+id/text_low_price_1"
-                android:layout_width="0dp"
-                android:layout_height="20dp"
-                android:layout_weight="1"
-                android:gravity="center_horizontal|top"
-                android:text="899萬" />
-
-            <TextView
-                android:id="@+id/text_low_price_2"
-                android:layout_width="0dp"
-                android:layout_height="20dp"
-                android:layout_weight="1"
-                android:gravity="center_horizontal|top"
-                android:text="782萬" />
-
-            <TextView
-                android:id="@+id/text_low_price_3"
-                android:layout_width="0dp"
-                android:layout_height="20dp"
-                android:layout_weight="1"
-                android:gravity="center_horizontal|top"
-                android:text="553萬" />
+                android:text="最低價"
+                android:textColor="@color/white" />
 
             <TextView
                 android:id="@+id/text_low_price_4"
@@ -197,46 +184,50 @@
                 android:layout_height="20dp"
                 android:layout_weight="1"
                 android:gravity="center_horizontal|top"
-                android:text="788萬" />
+                android:text="788萬"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:id="@+id/text_low_price_3"
+                android:layout_width="0dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:gravity="center_horizontal|top"
+                android:text="553萬"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:id="@+id/text_low_price_2"
+                android:layout_width="0dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:gravity="center_horizontal|top"
+                android:text="782萬"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:id="@+id/text_low_price_1"
+                android:layout_width="0dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:gravity="center_horizontal|top"
+                android:text="899萬"
+                android:textColor="@color/white" />
         </TableRow>
-        
+
         <TableRow
             android:id="@+id/tableRow4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            >
+            android:gravity="center_horizontal" >
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="20dp"
                 android:layout_weight="1"
                 android:gravity="center_horizontal|top"
-                android:text="交易數" />
-
-            <TextView
-                android:id="@+id/text_item_nums_1"
-                android:layout_width="0dp"
-                android:layout_height="20dp"
-                android:layout_weight="1"
-                android:gravity="center_horizontal|top"
-                android:text="30" />
-
-            <TextView
-                android:id="@+id/text_item_nums_2"
-                android:layout_width="0dp"
-                android:layout_height="20dp"
-                android:layout_weight="1"
-                android:gravity="center_horizontal|top"
-                android:text="39" />
-
-            <TextView
-                android:id="@+id/text_item_nums_3"
-                android:layout_width="0dp"
-                android:layout_height="20dp"
-                android:layout_weight="1"
-                android:gravity="center_horizontal|top"
-                android:text="20" />
+                android:text="交易數"
+                android:textColor="@color/white" />
 
             <TextView
                 android:id="@+id/text_item_nums_4"
@@ -244,10 +235,36 @@
                 android:layout_height="20dp"
                 android:layout_weight="1"
                 android:gravity="center_horizontal|top"
-                android:text="25" />
+                android:text="25"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:id="@+id/text_item_nums_3"
+                android:layout_width="0dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:gravity="center_horizontal|top"
+                android:text="20"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:id="@+id/text_item_nums_2"
+                android:layout_width="0dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:gravity="center_horizontal|top"
+                android:text="39"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:id="@+id/text_item_nums_1"
+                android:layout_width="0dp"
+                android:layout_height="20dp"
+                android:layout_weight="1"
+                android:gravity="center_horizontal|top"
+                android:text="30"
+                android:textColor="@color/white" />
         </TableRow>
-        
     </TableLayout>
-    
-    
+
 </LinearLayout>

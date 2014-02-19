@@ -254,6 +254,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 		mAdapter = new MyAdapter(getSupportFragmentManager());
 		mPager = (ViewPager) findViewById(R.id.pager);
 		mPager.setAdapter(mAdapter);
+		// set last month
+		mPager.setCurrentItem(3);
 		mPager.setOnPageChangeListener(new OnPageChangeListener()
 		{
 
@@ -262,15 +264,16 @@ public class MainActivity extends SherlockFragmentActivity implements
 			{
 				try
 				{
-					String dataString = Datas.mArrayKey.get(position)
+					String dataString = Datas.getKeyByPosition(position)
 							.substring(0, 3)
 							+ "/"
-							+ Datas.mArrayKey.get(position).substring(3);
+							+ Datas.getKeyByPosition(position)
+									.substring(3);
 					textYearMonth.setText(dataString);
 
-					setMapMark(mPager.getCurrentItem());
+					setMapMark(position);
 					BreiefFragment theBreiefFragment = mAdapter
-							.getCurrBreiefFragment(mPager.getCurrentItem());
+							.getCurrBreiefFragment(position);
 					theBreiefFragment.setBriefViews();
 				} catch (Exception e)
 				{
@@ -684,6 +687,10 @@ public class MainActivity extends SherlockFragmentActivity implements
 			{
 				Toast.makeText(MainActivity.this, "No Data!!",
 						Toast.LENGTH_SHORT).show();
+				Datas.mEstatesMap = getRealEstatesMap(Datas.mEstates);
+				BreiefFragment theBreiefFragment = mAdapter
+						.getCurrBreiefFragment(mPager.getCurrentItem());
+				theBreiefFragment.setBriefViews();
 			}
 
 		}
@@ -693,7 +700,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 	{
 		mGoogleMap.clear();
 
-		String monthKey = Datas.mArrayKey.get(pagerPosition);
+		String monthKey = Datas.getKeyByPosition(pagerPosition);
 		ArrayList<RealEstate> theEstates = new ArrayList<RealEstate>();
 		theEstates = Datas.mEstatesMap.get(monthKey);
 
@@ -786,7 +793,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 				public boolean onMarkerClick(Marker marker)
 				{
 					Intent intent = new Intent();
-					String monthKey = Datas.mArrayKey.get(mPager
+					String monthKey = Datas.getKeyByPosition(mPager
 							.getCurrentItem());
 					intent.putExtra("MonthKey", monthKey);
 					intent.putExtra("RowNumber",
@@ -816,22 +823,21 @@ public class MainActivity extends SherlockFragmentActivity implements
 		MarkerOptions marker = new MarkerOptions()
 				.position(AppConstants.currentLatLng);
 		marker.icon(BitmapDescriptorFactory
-				.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+				.fromResource(R.drawable.pin_red));
 		mGoogleMap.addMarker(marker);
 	}
 
 	@Override
 	public void onConnected(Bundle bundle)
 	{
-		Boolean firstBoolean = Setting.getFirstBoolean(MainActivity.this);		
+		Boolean firstBoolean = Setting.getFirstBoolean(MainActivity.this);
 		// if (Datas.mEstates == null || Datas.mEstates.size() == 0)
 		if (isReSearch && !firstBoolean)
 		{
 			getLocation(true, 0);
 			isReSearch = false;
 		}
-		
-		
+
 	}
 
 	@Override
