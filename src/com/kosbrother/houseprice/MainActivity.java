@@ -109,12 +109,13 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 	private ImageButton btnFocusButton;
 	private LinearLayout linearTitleLayout;
-	
+
 	private LayoutInflater inflater;
-	
+
 	private RelativeLayout adBannerLayout;
 	private AdView adMobAdView;
-	
+	private boolean isEstatesTaskRunning = false;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -123,10 +124,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 		km_dis = Double
 				.valueOf(Setting.getSetting(Setting.keyKmDistance, this));
 
-		new GetCurrentDateTask().execute();
-		
 		inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-		
+
 		linearTitleLayout = (LinearLayout) findViewById(R.id.linear_title);
 
 		btnFocusButton = (ImageButton) findViewById(R.id.image_btn_focus);
@@ -136,32 +135,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 			public void onClick(View v)
 			{
 				getLocation(true, 1);
-
-				// if (!mLocationClient.isConnected())
-				// {
-				// mLocationClient.connect();
-				// } else
-				// {
-				// Location currentLocation = mLocationClient
-				// .getLastLocation();
-				// if (currentLocation != null)
-				// {
-				// AppConstants.currentLatLng = new LatLng(currentLocation
-				// .getLatitude(), currentLocation.getLongitude());
-				// } else
-				// {
-				//
-				//
-				// AppConstants.currentLatLng = new LatLng(25.0478,
-				// 121.5172);
-				//
-				// }
-				//
-				// CameraPosition cameraPosition = new CameraPosition.Builder()
-				// .target(AppConstants.currentLatLng).zoom(14).build();
-				// mGoogleMap.animateCamera(CameraUpdateFactory
-				// .newCameraPosition(cameraPosition));
-				// }
 			}
 		});
 
@@ -192,7 +165,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 			@Override
 			public void onClick(View v)
 			{
-				// TODO Auto-generated method stub
 				BreiefFragment theBreiefFragment = mAdapter
 						.getCurrBreiefFragment(mPager.getCurrentItem());
 				if (theBreiefFragment.changeToDetailView())
@@ -211,7 +183,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 			@Override
 			public void onClick(View v)
 			{
-				// TODO Auto-generated method stub
 				showSelectDistanceDialog();
 			}
 		});
@@ -282,8 +253,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 					String dataString = Datas.getKeyByPosition(position)
 							.substring(0, 3)
 							+ "/"
-							+ Datas.getKeyByPosition(position)
-									.substring(3);
+							+ Datas.getKeyByPosition(position).substring(3);
 					textYearMonth.setText(dataString);
 
 					setMapMark(position);
@@ -358,6 +328,28 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 		mLocationClient = new LocationClient(this, this, this);
 
+		if (NetworkUtil.getConnectivityStatus(this) == 0)
+		{
+
+			// AlertDialog.Builder dialog = new AlertDialog.Builder(
+			// MainActivity.this);
+			// dialog.setTitle("無網路");
+			// dialog.setMessage("偵測不到網路");
+			// dialog.setPositiveButton("確定",
+			// new DialogInterface.OnClickListener()
+			// {
+			// public void onClick(
+			// DialogInterface dialoginterface, int i)
+			// {
+			// getLocation(true, 0);
+			// }
+			// });
+			// dialog.show();
+		} else
+		{
+			new GetCurrentDateTask().execute();
+		}
+
 		try
 		{
 			// Loading map
@@ -367,9 +359,9 @@ public class MainActivity extends SherlockFragmentActivity implements
 		{
 			e.printStackTrace();
 		}
-		
-//		CallAds();
-		
+
+		// CallAds();
+
 	}
 
 	private void searchLocation()
@@ -512,13 +504,13 @@ public class MainActivity extends SherlockFragmentActivity implements
 			// isReSearch = false;
 		}
 
-		Boolean firstString = Setting.getFirstBoolean(MainActivity.this);
-		if (firstString)
-		{
-			Intent intent = new Intent();
-			intent.setClass(MainActivity.this, FilterActivity.class);
-			startActivity(intent);
-		}
+		// Boolean firstString = Setting.getFirstBoolean(MainActivity.this);
+		// if (firstString)
+		// {
+		// Intent intent = new Intent();
+		// intent.setClass(MainActivity.this, FilterActivity.class);
+		// startActivity(intent);
+		// }
 	}
 
 	@Override
@@ -586,6 +578,11 @@ public class MainActivity extends SherlockFragmentActivity implements
 			// Toast.makeText(MainActivity.this, Integer.toString(crawlDateNum),
 			// Toast.LENGTH_SHORT).show();
 			makeArrayKey(crawlDateNum);
+			if (!isEstatesTaskRunning)
+			{
+				getLocation(true, 0);
+			}
+
 		}
 
 		private void makeArrayKey(int crawlDateNum)
@@ -629,6 +626,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 		{
 			super.onPreExecute();
 			linearTitleLayout.setVisibility(View.VISIBLE);
+			isEstatesTaskRunning = true;
 		}
 
 		@Override
@@ -689,6 +687,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 		@Override
 		protected void onPostExecute(Void result)
 		{
+			isEstatesTaskRunning = false;
 			linearTitleLayout.setVisibility(View.INVISIBLE);
 			if (Datas.mEstates != null && Datas.mEstates.size() != 0)
 			{
@@ -725,133 +724,149 @@ public class MainActivity extends SherlockFragmentActivity implements
 		{
 			for (int i = 0; i < theEstates.size(); i++)
 			{
-				
-				
+
 				LatLng newLatLng = new LatLng(theEstates.get(i).y_lat,
 						theEstates.get(i).x_long);
-				
+
 				View layout = inflater.inflate(R.layout.item_marker, null);
 				layout.setLayoutParams(new LinearLayout.LayoutParams(
 						LinearLayout.LayoutParams.WRAP_CONTENT,
 						LinearLayout.LayoutParams.WRAP_CONTENT));
-				ImageView markerView = (ImageView) layout.findViewById(R.id.image_marker);
-				TextView markerText = (TextView) layout.findViewById(R.id.text_marker_price);
+				ImageView markerView = (ImageView) layout
+						.findViewById(R.id.image_marker);
+				TextView markerText = (TextView) layout
+						.findViewById(R.id.text_marker_price);
 
 				// for later marker info window use
-				MarkerOptions marker = new MarkerOptions().position(newLatLng).title(
-						Integer.toString(i));
-				markerText.setText(Double.toString(theEstates.get(i).square_price));
+				MarkerOptions marker = new MarkerOptions().position(newLatLng)
+						.title(Integer.toString(i));
+				markerText
+						.setText(Double.toString(theEstates.get(i).square_price));
 
 				markerView.setImageResource(R.drawable.marker_sale);
-			
-				
 
 				Bitmap bm = loadBitmapFromView(layout);
 
 				// Changing marker icon
 				marker.icon(BitmapDescriptorFactory.fromBitmap(bm));
-				
-				mGoogleMap.addMarker(marker);
 
+				mGoogleMap.addMarker(marker);
+				
+				bm.recycle();
+				
 			}
-			
-//			for (int i = 0; i < theEstates.size(); i++)
-//			{
-//				LatLng newLatLng = new LatLng(theEstates.get(i).y_lat,
-//						theEstates.get(i).x_long);
-//
-//				MarkerOptions marker = new MarkerOptions().position(newLatLng);
-//				marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_sale));
-//				mGoogleMap.addMarker(marker);
-//
-//			}
+
+			// for (int i = 0; i < theEstates.size(); i++)
+			// {
+			// LatLng newLatLng = new LatLng(theEstates.get(i).y_lat,
+			// theEstates.get(i).x_long);
+			//
+			// MarkerOptions marker = new MarkerOptions().position(newLatLng);
+			// marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_sale));
+			// mGoogleMap.addMarker(marker);
+			//
+			// }
+			System.gc();
 		}
 		addCurrentLocationMarker();
-
+		
 	}
-	
+
 	public static Bitmap loadBitmapFromView(View v)
 	{
 		if (v.getMeasuredHeight() <= 0)
 		{
 			v.measure(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-			Bitmap b = Bitmap.createBitmap(v.getMeasuredWidth(), v.getMeasuredHeight(),
-					Bitmap.Config.ARGB_8888);
+			Bitmap b = Bitmap.createBitmap(v.getMeasuredWidth(),
+					v.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
 			Canvas c = new Canvas(b);
 			v.layout(0, 0, v.getMeasuredWidth(), v.getMeasuredHeight());
 			v.draw(c);
 			return b;
 		}
 
-		Bitmap b = Bitmap.createBitmap(v.getLayoutParams().width, v.getLayoutParams().height,
-				Bitmap.Config.ARGB_8888);
+		Bitmap b = Bitmap.createBitmap(v.getLayoutParams().width,
+				v.getLayoutParams().height, Bitmap.Config.ARGB_8888);
 		Canvas c = new Canvas(b);
 		v.layout(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
 		v.draw(c);
 		return b;
 	}
-	
+
 	private void getLocation(Boolean isReGetLoc, int aniParam)
 	{
 
 		// If Google Play Services is available
 		if (servicesConnected())
 		{
+			boolean isNeedChangeMap = false;
+
 			if (isReGetLoc)
 			{
-				Location currentLocation = mLocationClient.getLastLocation();
-				if (currentLocation != null)
+
+				try
 				{
-					AppConstants.currentLatLng = new LatLng(
-							currentLocation.getLatitude(),
-							currentLocation.getLongitude());
+					Location currentLocation = mLocationClient
+							.getLastLocation();
+					if (currentLocation != null)
+					{
+						AppConstants.currentLatLng = new LatLng(
+								currentLocation.getLatitude(),
+								currentLocation.getLongitude());
+					} else
+					{
+
+						AppConstants.currentLatLng = new LatLng(25.0478,
+								121.5172);
+
+					}
+					// add location marker
+					addCurrentLocationMarker();
+				} catch (Exception e)
+				{
+					isNeedChangeMap = true;
+				}
+
+			}
+
+			if (!isNeedChangeMap)
+			{
+				center_x = AppConstants.currentLatLng.longitude;
+				center_y = AppConstants.currentLatLng.latitude;
+
+				float mapSize = 15.0f;
+
+				if (0 < km_dis && km_dis <= 0.3)
+				{
+					mapSize = 16.0f;
+				} else if (0.3 < km_dis && km_dis <= 0.5)
+				{
+					mapSize = 15.0f;
+				} else if (0.5 < km_dis && km_dis <= 1)
+				{
+					mapSize = 14.0f;
+				} else if (1 < km_dis && km_dis <= 2)
+				{
+					mapSize = 13.0f;
 				} else
 				{
-
-					AppConstants.currentLatLng = new LatLng(25.0478, 121.5172);
-
+					mapSize = 12.0f;
 				}
-				// add location marker
-				addCurrentLocationMarker();
 
-			}
-
-			center_x = AppConstants.currentLatLng.longitude;
-			center_y = AppConstants.currentLatLng.latitude;
-
-			float mapSize = 15.0f;
-
-			if (0 < km_dis && km_dis <= 0.3)
-			{
-				mapSize = 16.0f;
-			} else if (0.3 < km_dis && km_dis <= 0.5)
-			{
-				mapSize = 15.0f;
-			} else if (0.5 < km_dis && km_dis <= 1)
-			{
-				mapSize = 14.0f;
-			} else if (1 < km_dis && km_dis <= 2)
-			{
-				mapSize = 13.0f;
-			} else
-			{
-				mapSize = 12.0f;
-			}
-
-			if (aniParam == 0)
-			{
-				mGoogleMap
-						.moveCamera(CameraUpdateFactory.newLatLngZoom(
-								new LatLng(AppConstants.currentLatLng.latitude,
-										AppConstants.currentLatLng.longitude),
-								mapSize));
-			} else
-			{
-				CameraPosition cameraPosition = new CameraPosition.Builder()
-						.target(AppConstants.currentLatLng).zoom(mapSize)
-						.build();
-				mGoogleMap.animateCamera(CameraUpdateFactory
-						.newCameraPosition(cameraPosition));
+				if (aniParam == 0)
+				{
+					mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+							new LatLng(AppConstants.currentLatLng.latitude,
+									AppConstants.currentLatLng.longitude),
+							mapSize));
+				} else
+				{
+					CameraPosition cameraPosition = new CameraPosition.Builder()
+							.target(AppConstants.currentLatLng).zoom(mapSize)
+							.build();
+					mGoogleMap.animateCamera(CameraUpdateFactory
+							.newCameraPosition(cameraPosition));
+				}
 			}
 
 			mGoogleMap.setOnMarkerClickListener(new OnMarkerClickListener()
@@ -880,7 +895,39 @@ public class MainActivity extends SherlockFragmentActivity implements
 			// LatLng(center_y, center_x),
 			// 16.0f));
 
-			new GetEstatesTask().execute();
+			if (NetworkUtil.getConnectivityStatus(MainActivity.this) == 0)
+			{
+				AlertDialog.Builder dialog = new AlertDialog.Builder(
+						MainActivity.this);
+				dialog.setTitle("無網路");
+				dialog.setMessage("偵測不到網路");
+				dialog.setPositiveButton("確定",
+						new DialogInterface.OnClickListener()
+						{
+							public void onClick(
+									DialogInterface dialoginterface, int i)
+							{
+								getLocation(true, 0);
+							}
+						});
+				dialog.show();
+			} else
+			{
+				if (isNeedChangeMap)
+				{
+					// do nothing
+				} else
+				{
+					if (Datas.mArrayKey.size() == 0)
+					{
+						new GetCurrentDateTask().execute();
+					} else
+					{
+						new GetEstatesTask().execute();
+					}
+				}
+
+			}
 
 		}
 	}
@@ -890,17 +937,21 @@ public class MainActivity extends SherlockFragmentActivity implements
 		// TODO Auto-generated method stub
 		MarkerOptions marker = new MarkerOptions()
 				.position(AppConstants.currentLatLng);
-		marker.icon(BitmapDescriptorFactory
-				.fromResource(R.drawable.pin_red));
+		marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_red));
 		mGoogleMap.addMarker(marker);
 	}
 
 	@Override
 	public void onConnected(Bundle bundle)
 	{
-		Boolean firstBoolean = Setting.getFirstBoolean(MainActivity.this);
-		// if (Datas.mEstates == null || Datas.mEstates.size() == 0)
-		if (isReSearch && !firstBoolean)
+		// Boolean firstBoolean = Setting.getFirstBoolean(MainActivity.this);
+		// if (isReSearch && !firstBoolean)
+		// {
+		// getLocation(true, 0);
+		// isReSearch = false;
+		// }
+
+		if (isReSearch)
 		{
 			getLocation(true, 0);
 			isReSearch = false;
@@ -1130,12 +1181,12 @@ public class MainActivity extends SherlockFragmentActivity implements
 				});
 		editDialog.show();
 	}
-	
+
 	private void CallAds()
 	{
 
-		adBannerLayout = (RelativeLayout)findViewById(R.id.adLayout);
-		
+		adBannerLayout = (RelativeLayout) findViewById(R.id.adLayout);
+
 		final AdRequest adReq = new AdRequest.Builder().build();
 
 		// 12-18 17:01:12.438: I/Ads(8252): Use
@@ -1150,20 +1201,22 @@ public class MainActivity extends SherlockFragmentActivity implements
 		adMobAdView.setAdListener(new AdListener()
 		{
 			@Override
-			public void onAdLoaded() {
+			public void onAdLoaded()
+			{
 				adBannerLayout.setVisibility(View.VISIBLE);
-				if (adBannerLayout.getChildAt(0)!=null)
+				if (adBannerLayout.getChildAt(0) != null)
 				{
 					adBannerLayout.removeViewAt(0);
 				}
 				adBannerLayout.addView(adMobAdView);
 			}
-			
-			public void onAdFailedToLoad(int errorCode) {
+
+			public void onAdFailedToLoad(int errorCode)
+			{
 				adBannerLayout.setVisibility(View.GONE);
 			}
-			
-		});	
+
+		});
 	}
 
 }
