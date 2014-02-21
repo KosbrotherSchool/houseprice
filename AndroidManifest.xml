@@ -30,9 +30,12 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.kosbrother.houseprice.MainActivity"
+            android:name="com.kosbrother.houseprice.FilterActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustPan"
+            android:isScrollContainer="false" 
+             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -40,10 +43,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".FilterActivity"
+            android:name=".MainActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" >
+            android:windowSoftInputMode="stateHidden|adjustPan" 
+            android:isScrollContainer="false" 
+            >
         </activity>
         <activity
             android:name=".DetailActivity"

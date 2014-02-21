@@ -342,7 +342,7 @@ public class FilterActivity extends SherlockFragmentActivity
 		areaMaxEditText = (EditText) findViewById(R.id.area_max);
 
 		mActionBar = getSupportActionBar();
-		mActionBar.setTitle("房價報報---搜索設定");
+		mActionBar.setTitle("看屋高手---搜索設定");
 
 		stringPurpose = Setting.getSetting(Setting.keyPurpose, this);
 		minHousePriceString = Setting
@@ -557,5 +557,13 @@ public class FilterActivity extends SherlockFragmentActivity
 		super.onResume();
 		// hideSoftKeyboard();
 	}
-
+	
+	@Override
+	public void onBackPressed()
+	{
+		// TODO Auto-generated method stub
+		super.onBackPressed();
+//		MainActivity.isReSearch = true;
+	}
+	
 }

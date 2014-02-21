@@ -18,9 +18,9 @@
         android:title="分享"/>
     
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_star"
         android:orderInCategory="100"
         android:showAsAction="never"
-        android:title="設定"/>
+        android:title="給評(星星)"/>
 
 </menu>

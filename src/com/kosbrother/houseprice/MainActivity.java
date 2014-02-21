@@ -13,6 +13,7 @@ import android.graphics.Canvas;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -52,6 +53,8 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.data.f;
+import com.google.android.gms.internal.el;
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -115,6 +118,10 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private RelativeLayout adBannerLayout;
 	private AdView adMobAdView;
 	private boolean isEstatesTaskRunning = false;
+
+	private ArrayList<MarkerOptions> mMarkers = new ArrayList<MarkerOptions>();
+
+	private float mapSize;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -206,7 +213,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 							InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
 							inputMethodManager.hideSoftInputFromWindow(
 									getCurrentFocus().getWindowToken(), 0);
-							searchLocation();
+							// searchLocation();
+							new searchLocationTask().execute();
 							return true;
 						}
 						return false;
@@ -231,7 +239,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 					InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
 					inputMethodManager.hideSoftInputFromWindow(
 							getCurrentFocus().getWindowToken(), 0);
-					searchLocation();
+					// searchLocation();
+					new searchLocationTask().execute();
 				}
 
 			}
@@ -256,7 +265,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 							+ Datas.getKeyByPosition(position).substring(3);
 					textYearMonth.setText(dataString);
 
-					setMapMark(position);
+					// setMapMark(position);
+					new addMarkerTask().execute();
 					BreiefFragment theBreiefFragment = mAdapter
 							.getCurrBreiefFragment(position);
 					theBreiefFragment.setBriefViews();
@@ -294,7 +304,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 				} else
 				{
 					mPager.setCurrentItem(mPager.getCurrentItem() - 1);
-					setMapMark(mPager.getCurrentItem());
+					// setMapMark(mPager.getCurrentItem());
+					new addMarkerTask().execute();
 				}
 			}
 		});
@@ -313,7 +324,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 				} else
 				{
 					mPager.setCurrentItem(mPager.getCurrentItem() + 1);
-					setMapMark(mPager.getCurrentItem());
+					// setMapMark(mPager.getCurrentItem());
+					new addMarkerTask().execute();
 				}
 
 			}
@@ -380,8 +392,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 		}
 		if (addresses == null || addresses.isEmpty())
 		{
-			Toast.makeText(MainActivity.this, "無此地點", Toast.LENGTH_SHORT)
-					.show();
+			// Toast.makeText(MainActivity.this, "無此地點", Toast.LENGTH_SHORT)
+			// .show();
 		} else
 		{
 			address = addresses.get(0);
@@ -389,9 +401,9 @@ public class MainActivity extends SherlockFragmentActivity implements
 			double geoLong = address.getLongitude();
 			AppConstants.currentLatLng = new LatLng(geoLat, geoLong);
 
-			addCurrentLocationMarker();
+			// addCurrentLocationMarker();
 
-			float mapSize = 15.0f;
+			mapSize = 15.0f;
 
 			if (0 < km_dis && km_dis <= 0.3)
 			{
@@ -410,12 +422,51 @@ public class MainActivity extends SherlockFragmentActivity implements
 				mapSize = 12.0f;
 			}
 
-			mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-					new LatLng(AppConstants.currentLatLng.latitude,
-							AppConstants.currentLatLng.longitude), mapSize));
 			center_x = geoLong;
 			center_y = geoLat;
 			new GetEstatesTask().execute();
+
+		}
+
+	}
+
+	private class searchLocationTask extends AsyncTask<Void, Void, Void>
+	{
+
+		@Override
+		protected void onPreExecute()
+		{
+			// TODO Auto-generated method stub
+			super.onPreExecute();
+			linearTitleLayout.setVisibility(View.VISIBLE);
+		}
+
+		@Override
+		protected Void doInBackground(Void... arg0)
+		{
+			// TODO Auto-generated method stub
+			searchLocation();
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(Void result)
+		{
+			if (isEstatesTaskRunning)
+			{
+				addCurrentLocationMarker();
+				mGoogleMap
+						.animateCamera(CameraUpdateFactory.newLatLngZoom(
+								new LatLng(AppConstants.currentLatLng.latitude,
+										AppConstants.currentLatLng.longitude),
+								mapSize));
+
+			} else
+			{
+				linearTitleLayout.setVisibility(View.GONE);
+				Toast.makeText(MainActivity.this, "無此地點", Toast.LENGTH_SHORT)
+						.show();
+			}
 
 		}
 
@@ -488,6 +539,11 @@ public class MainActivity extends SherlockFragmentActivity implements
 			intent2.putExtra(Intent.EXTRA_TEXT, "DownLoad Url");
 			startActivity(Intent.createChooser(intent2, "Share..."));
 			break;
+		case R.id.action_star:
+			Uri uri = Uri.parse("https://play.google.com/store/apps/details?id=com.kosbrother.realestate");
+			Intent it = new Intent(Intent.ACTION_VIEW, uri);
+			startActivity(it);
+			break;
 		}
 
 		return super.onOptionsItemSelected(item);
@@ -500,17 +556,17 @@ public class MainActivity extends SherlockFragmentActivity implements
 		// initilizeMap();
 		if (isReSearch && mLocationClient.isConnected())
 		{
-			getLocation(true, 0);
+			if (editTextSearch.getText().toString().equals(""))
+			{
+				getLocation(true, 0);
+			} else
+			{
+				new searchLocationTask().execute();
+			}
+
 			// isReSearch = false;
 		}
 
-		// Boolean firstString = Setting.getFirstBoolean(MainActivity.this);
-		// if (firstString)
-		// {
-		// Intent intent = new Intent();
-		// intent.setClass(MainActivity.this, FilterActivity.class);
-		// startActivity(intent);
-		// }
 	}
 
 	@Override
@@ -518,6 +574,15 @@ public class MainActivity extends SherlockFragmentActivity implements
 	{
 
 		super.onStart();
+
+		// Boolean firstString = Setting.getFirstBoolean(MainActivity.this);
+		// if (firstString)
+		// {
+		// isReSearch = false;
+		// Intent intent = new Intent();
+		// intent.setClass(MainActivity.this, FilterActivity.class);
+		// startActivity(intent);
+		// }
 
 		/*
 		 * Connect the client. Don't re-start any requests here; instead, wait
@@ -556,6 +621,41 @@ public class MainActivity extends SherlockFragmentActivity implements
 		public BreiefFragment getCurrBreiefFragment(int position)
 		{
 			return theBreiefFragments[position];
+		}
+
+	}
+
+	private class addMarkerTask extends AsyncTask<Void, Void, Void>
+	{
+
+		@Override
+		protected void onPreExecute()
+		{
+			// TODO Auto-generated method stub
+			super.onPreExecute();
+			mGoogleMap.clear();
+			addCurrentLocationMarker();
+		}
+
+		@Override
+		protected Void doInBackground(Void... arg0)
+		{
+			// TODO Auto-generated method stub
+			setMapMark(mPager.getCurrentItem());
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(Void result)
+		{
+			// Toast.makeText(MainActivity.this, Integer.toString(crawlDateNum),
+			// Toast.LENGTH_SHORT).show();
+
+			for (int i = 0; i < mMarkers.size(); i++)
+			{
+				mGoogleMap.addMarker(mMarkers.get(i));
+			}
+
 		}
 
 	}
@@ -627,6 +727,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 			super.onPreExecute();
 			linearTitleLayout.setVisibility(View.VISIBLE);
 			isEstatesTaskRunning = true;
+
 		}
 
 		@Override
@@ -694,10 +795,12 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 				Datas.mEstatesMap = getRealEstatesMap(Datas.mEstates);
 
-				setMapMark(mPager.getCurrentItem());
+				// setMapMark(mPager.getCurrentItem());
+				new addMarkerTask().execute();
 				BreiefFragment theBreiefFragment = mAdapter
 						.getCurrBreiefFragment(mPager.getCurrentItem());
 				theBreiefFragment.setBriefViews();
+				theBreiefFragment.showBrief();
 
 			} else
 			{
@@ -714,7 +817,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 	private void setMapMark(int pagerPosition)
 	{
-		mGoogleMap.clear();
+
+		mMarkers.clear();
 
 		String monthKey = Datas.getKeyByPosition(pagerPosition);
 		ArrayList<RealEstate> theEstates = new ArrayList<RealEstate>();
@@ -750,10 +854,10 @@ public class MainActivity extends SherlockFragmentActivity implements
 				// Changing marker icon
 				marker.icon(BitmapDescriptorFactory.fromBitmap(bm));
 
-				mGoogleMap.addMarker(marker);
-				
-				bm.recycle();
-				
+				mMarkers.add(marker);
+
+				// bm.recycle();
+
 			}
 
 			// for (int i = 0; i < theEstates.size(); i++)
@@ -766,10 +870,9 @@ public class MainActivity extends SherlockFragmentActivity implements
 			// mGoogleMap.addMarker(marker);
 			//
 			// }
-			System.gc();
+			// System.gc();
 		}
-		addCurrentLocationMarker();
-		
+
 	}
 
 	public static Bitmap loadBitmapFromView(View v)
@@ -834,7 +937,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 				center_x = AppConstants.currentLatLng.longitude;
 				center_y = AppConstants.currentLatLng.latitude;
 
-				float mapSize = 15.0f;
+				mapSize = 15.0f;
 
 				if (0 < km_dis && km_dis <= 0.3)
 				{
@@ -953,7 +1056,16 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 		if (isReSearch)
 		{
-			getLocation(true, 0);
+			// getLocation(true, 0);
+
+			if (editTextSearch.getText().toString().equals(""))
+			{
+				getLocation(true, 0);
+			} else
+			{
+				new searchLocationTask().execute();
+			}
+
 			isReSearch = false;
 		}
 
@@ -1060,8 +1172,14 @@ public class MainActivity extends SherlockFragmentActivity implements
 		//
 		// // After disconnect() is called, the client is considered "dead".
 		mLocationClient.disconnect();
+	}
+	
+	@Override
+	public void onBackPressed()
+	{
+		// TODO Auto-generated method stub
+		super.onBackPressed();
 		isReSearch = true;
-
 	}
 
 	private void stopPeriodicUpdates()

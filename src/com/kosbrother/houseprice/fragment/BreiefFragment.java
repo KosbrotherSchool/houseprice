@@ -132,10 +132,19 @@ public class BreiefFragment extends Fragment
 			layoutBrief.setVisibility(View.VISIBLE);
 			layoutDetailView.setVisibility(View.GONE);
 			return false;
-		}
-		
+		}		
 	}
-
+	
+	public void showBrief(){
+		layoutBrief.setVisibility(View.VISIBLE);
+		layoutDetailView.setVisibility(View.GONE);
+	}
+	
+	public void showDetail(){
+		layoutBrief.setVisibility(View.VISIBLE);
+		layoutDetailView.setVisibility(View.GONE);
+	}
+	
 	public void addDetailViews()
 	{	
 	

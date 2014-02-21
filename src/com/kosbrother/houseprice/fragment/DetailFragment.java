@@ -210,16 +210,19 @@ public class DetailFragment extends Fragment
 						TextView t_position = new TextView(getActivity());
 						t_position.setText("區域路段:" + theLandData.land_position);
 						t_position.setTextSize(text_size);
+						t_position.setTextColor(getResources().getColor(R.color.white));
 						groundDetailLayout.addView(t_position);
 
 						TextView t_area = new TextView(getActivity());
 						t_area.setText("土地坪數:" + theLandData.land_area);
 						t_area.setTextSize(text_size);
+						t_area.setTextColor(getResources().getColor(R.color.white));
 						groundDetailLayout.addView(t_area);
 
 						TextView t_usage = new TextView(getActivity());
 						t_usage.setText("使用分區:" + theLandData.land_usage);
 						t_usage.setTextSize(text_size);
+						t_usage.setTextColor(getResources().getColor(R.color.white));
 						groundDetailLayout.addView(t_usage);
 
 						LinearLayout line = new LinearLayout(getActivity());
@@ -244,34 +247,40 @@ public class DetailFragment extends Fragment
 						t_age.setText("建物年齡:"
 								+ Integer.toString(theBuildingData.age));
 						t_age.setTextSize(text_size);
+						t_age.setTextColor(getResources().getColor(R.color.white));
 						buildingDetailLayout.addView(t_age);
 
 						TextView t_area = new TextView(getActivity());
 						t_area.setText("建物坪數:" + theBuildingData.building_area);
 						t_area.setTextSize(text_size);
+						t_area.setTextColor(getResources().getColor(R.color.white));
 						buildingDetailLayout.addView(t_area);
 
 						TextView t_purpose = new TextView(getActivity());
 						t_purpose.setText("建物目的:"
 								+ theBuildingData.building_purpose);
 						t_purpose.setTextSize(text_size);
+						t_purpose.setTextColor(getResources().getColor(R.color.white));
 						buildingDetailLayout.addView(t_purpose);
 
 						TextView t_material = new TextView(getActivity());
 						t_material.setText("主要建材:"
 								+ theBuildingData.building_material);
 						t_material.setTextSize(text_size);
+						t_material.setTextColor(getResources().getColor(R.color.white));
 						buildingDetailLayout.addView(t_material);
 
 						TextView t_date = new TextView(getActivity());
 						t_date.setText("完成年月日:" + theBuildingData.built_date);
 						t_date.setTextSize(text_size);
+						t_date.setTextColor(getResources().getColor(R.color.white));
 						buildingDetailLayout.addView(t_date);
 
 						TextView t_layer = new TextView(getActivity());
 						t_layer.setText("樓層:" + theBuildingData.building_layer
 								+ "/" + theBuildingData.building_total_layer);
 						t_layer.setTextSize(text_size);
+						t_layer.setTextColor(getResources().getColor(R.color.white));
 						buildingDetailLayout.addView(t_layer);
 
 						LinearLayout line = new LinearLayout(getActivity());
@@ -295,16 +304,19 @@ public class DetailFragment extends Fragment
 						TextView t_type = new TextView(getActivity());
 						t_type.setText("車位類別:" + theParkingData.parking_type);
 						t_type.setTextSize(text_size);
+						t_type.setTextColor(getResources().getColor(R.color.white));
 						parkingDetailLayout.addView(t_type);
 
 						TextView t_price = new TextView(getActivity());
 						t_price.setText("車位價格:" + theParkingData.parking_price);
 						t_price.setTextSize(text_size);
+						t_price.setTextColor(getResources().getColor(R.color.white));
 						parkingDetailLayout.addView(t_price);
 
 						TextView t_area = new TextView(getActivity());
 						t_area.setText("車位面積:" + theParkingData.parking_area);
 						t_area.setTextSize(text_size);
+						t_area.setTextColor(getResources().getColor(R.color.white));
 						parkingDetailLayout.addView(t_area);
 
 						LinearLayout line = new LinearLayout(getActivity());

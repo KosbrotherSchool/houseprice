@@ -115,35 +115,123 @@ public class HouseApi
 
 			// for estate data
 			int estate_id = jArray.getJSONObject(0).getInt("id");
-
-			String estate_address = jArray.getJSONObject(0)
-					.getString("address");
-
-			int exchange_year = jArray.getJSONObject(0).getInt("exchange_year");
-			int exchange_month = jArray.getJSONObject(0).getInt(
-					"exchange_month");
-			int total_price = jArray.getJSONObject(0).getInt("total_price");
-			double square_price = jArray.getJSONObject(0).getDouble(
-					"square_price");
-			double total_area = jArray.getJSONObject(0).getDouble("total_area");
-
-			String exchange_content = jArray.getJSONObject(0).getString(
-					"exchange_content");
-			String building_type = jArray.getJSONObject(0).getString(
-					"building_type");
-			String building_rooms = jArray.getJSONObject(0).getString(
-					"building_rooms");
-
+			
+			String estate_address = "";
+			try
+			{
+				 estate_address = jArray.getJSONObject(0)
+							.getString("address");
+			} catch (Exception e)
+			{
+				// TODO: handle exception
+			}
+			
+			int exchange_year = 0;
+			try
+			{
+				exchange_year = jArray.getJSONObject(0).getInt("exchange_year");
+			} catch (Exception e)
+			{
+				// TODO: handle exception
+			}
+			 
+			int exchange_month = 0;
+			try
+			{
+				exchange_month = jArray.getJSONObject(0).getInt(
+						"exchange_month");
+			} catch (Exception e)
+			{
+				// TODO: handle exception
+			}
+			
+			int total_price =0;
+			try
+			{
+				 total_price = jArray.getJSONObject(0).getInt("total_price");
+			} catch (Exception e)
+			{
+				// TODO: handle exception
+			}
+			
+			double square_price =0;
+			try
+			{
+				square_price = jArray.getJSONObject(0).getDouble(
+						"square_price");
+			} catch (Exception e)
+			{
+				// TODO: handle exception
+			}
+		    
+			double total_area = 0;
+			try
+			{
+				total_area = jArray.getJSONObject(0).getDouble("total_area");
+			} catch (Exception e)
+			{
+				// TODO: handle exception
+			}
+	
+			
+			String exchange_content= "";
+			try
+			{
+				exchange_content = jArray.getJSONObject(0).getString(
+						"exchange_content");
+			} catch (Exception e)
+			{
+				// TODO: handle exception
+			}
+			
+			String building_type = "";
+			try
+			{
+				building_type = jArray.getJSONObject(0).getString(
+						"building_type");
+			} catch (Exception e)
+			{
+				// TODO: handle exception
+			}
+			
+			String building_rooms = "";
+			try
+			{
+				building_rooms = jArray.getJSONObject(0).getString(
+						"building_rooms");
+			} catch (Exception e)
+			{
+				// TODO: handle exception
+			}
+			
 			Double x_long = jArray.getJSONObject(0).getDouble("x_long");
 			Double y_lat = jArray.getJSONObject(0).getDouble("y_lat");
 
 			int county_id = jArray.getJSONObject(0).getInt("county_id");
 			int town_id = jArray.getJSONObject(0).getInt("town_id");
-			int ground_type_id = jArray.getJSONObject(0).getInt(
-					"ground_type_id");
-			int building_type_id = jArray.getJSONObject(0).getInt(
-					"building_type_id");
-
+			
+			int ground_type_id = 0;
+			try
+			{
+				ground_type_id = jArray.getJSONObject(0).getInt(
+						"ground_type_id");
+			} catch (Exception e)
+			{
+				// TODO: handle exception
+			}
+		
+			
+			int building_type_id = 0;
+			try
+			{
+				building_type_id = jArray.getJSONObject(0).getInt(
+						"building_type_id");
+			} catch (Exception e)
+			{
+				// TODO: handle exception
+			}
+			
+			
 			String notes = jArray.getJSONObject(0).getString("notes");
 
 			RealEstate newEstate = new RealEstate(estate_id, 1, estate_address,
@@ -156,7 +244,7 @@ public class HouseApi
 			// for land data
 			JSONArray jLandArray = jArray.getJSONArray(1);
 			for (int i = 0; i < jLandArray.length(); i++)
-			{
+			{	
 				int l_estate_id = jLandArray.getJSONObject(i).getInt(
 						"realestate_id");
 				String l_position = jLandArray.getJSONObject(i).getString(
