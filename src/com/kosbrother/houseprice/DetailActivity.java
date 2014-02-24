@@ -7,11 +7,17 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
+import android.view.View;
+import android.widget.RelativeLayout;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
 import com.kosbrother.houseprice.fragment.DetailFragment;
 
 public class DetailActivity extends SherlockFragmentActivity
@@ -21,6 +27,9 @@ public class DetailActivity extends SherlockFragmentActivity
 	ViewPager mPager;
 	private ActionBar mActionBar;
 	private String mMonthKey;
+	
+	private RelativeLayout adBannerLayout;
+	private AdView adMobAdView;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -75,7 +84,7 @@ public class DetailActivity extends SherlockFragmentActivity
 			}
 		});
 		
-//		CallAds();
+		CallAds();
 	}
 
 	public class MyAdapter extends FragmentStatePagerAdapter
@@ -191,5 +200,38 @@ public class DetailActivity extends SherlockFragmentActivity
 //		EasyTracker.getInstance(this).activityStop(this); // Add this method.
 	}
 	
+	private void CallAds()
+	{
 
+		adBannerLayout = (RelativeLayout) findViewById(R.id.adLayout);
+		final AdRequest adReq = new AdRequest.Builder().build();
+
+		// 12-18 17:01:12.438: I/Ads(8252): Use
+		// AdRequest.Builder.addTestDevice("A25819A64B56C65500038B8A9E7C19DD")
+		// to get test ads on this device.
+
+		adMobAdView = new AdView(DetailActivity.this);
+		adMobAdView.setAdSize(AdSize.SMART_BANNER);
+		adMobAdView.setAdUnitId(AppConstants.MEDIATION_KEY);
+
+		adMobAdView.loadAd(adReq);
+		adMobAdView.setAdListener(new AdListener()
+		{
+			@Override
+			public void onAdLoaded() {
+				adBannerLayout.setVisibility(View.VISIBLE);
+				if (adBannerLayout.getChildAt(0)!=null)
+				{
+					adBannerLayout.removeViewAt(0);
+				}
+				adBannerLayout.addView(adMobAdView);
+			}
+			
+			public void onAdFailedToLoad(int errorCode) {
+				adBannerLayout.setVisibility(View.GONE);
+			}
+			
+		});	
+	}
+	
 }
