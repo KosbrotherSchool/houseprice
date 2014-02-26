@@ -71,22 +71,22 @@ public class FilterActivity extends SherlockFragmentActivity
 
 	private ImageView groundInfoImageView;
 	private ImageView buildInfoImageView;
-	
+
 	private RelativeLayout adBannerLayout;
 	private AdView adMobAdView;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_filter);
 
-		boolean isFirstOpen = Setting.getFirstBoolean(FilterActivity.this);
-		if (isFirstOpen)
-		{
-//			Toast.makeText(this, "請先設定搜索條件", Toast.LENGTH_SHORT).show();
-			Setting.setFirstBoolean(FilterActivity.this);
-		}
+//		boolean isFirstOpen = Setting.getFirstBoolean(FilterActivity.this);
+//		if (isFirstOpen)
+//		{
+//			// Toast.makeText(this, "請先設定搜索條件", Toast.LENGTH_SHORT).show();
+//			Setting.setFirstBoolean(FilterActivity.this);
+//		}
 
 		lowHousePriceEditText = (EditText) findViewById(R.id.low_house_price_edit);
 		highHousePriceEditText = (EditText) findViewById(R.id.high_house_price_edit);
@@ -103,18 +103,20 @@ public class FilterActivity extends SherlockFragmentActivity
 			{
 				AlertDialog.Builder dialog = new AlertDialog.Builder(
 						FilterActivity.this);
-				
-				LayoutInflater inflater = FilterActivity.this.getLayoutInflater();
-				
+
+				LayoutInflater inflater = FilterActivity.this
+						.getLayoutInflater();
+
 				dialog.setTitle("房地型態(可復選)");
-				dialog.setView(inflater.inflate(R.layout.dialog_ground_info, null));
+				dialog.setView(inflater.inflate(R.layout.dialog_ground_info,
+						null));
 				dialog.setPositiveButton("確定",
 						new DialogInterface.OnClickListener()
 						{
 							public void onClick(
 									DialogInterface dialoginterface, int i)
 							{
-								
+
 							}
 						});
 				dialog.show();
@@ -130,17 +132,19 @@ public class FilterActivity extends SherlockFragmentActivity
 			{
 				AlertDialog.Builder dialog = new AlertDialog.Builder(
 						FilterActivity.this);
-				
-				LayoutInflater inflater = FilterActivity.this.getLayoutInflater();
+
+				LayoutInflater inflater = FilterActivity.this
+						.getLayoutInflater();
 				dialog.setTitle("建物型態(可復選)");
-				dialog.setView(inflater.inflate(R.layout.dialog_build_info, null));
+				dialog.setView(inflater.inflate(R.layout.dialog_build_info,
+						null));
 				dialog.setPositiveButton("確定",
 						new DialogInterface.OnClickListener()
 						{
 							public void onClick(
 									DialogInterface dialoginterface, int i)
 							{
-								
+
 							}
 						});
 				dialog.show();
@@ -172,10 +176,10 @@ public class FilterActivity extends SherlockFragmentActivity
 					Setting.saveSetting(Setting.keyHousePriceMin,
 							lowHousePriceEditText.getText().toString(),
 							FilterActivity.this);
-				}else {
+				} else
+				{
 					Setting.saveSetting(Setting.keyHousePriceMin,
-							Setting.initialHousePriceMin,
-							FilterActivity.this);
+							Setting.initialHousePriceMin, FilterActivity.this);
 				}
 
 				// high house price
@@ -184,10 +188,10 @@ public class FilterActivity extends SherlockFragmentActivity
 					Setting.saveSetting(Setting.keyHousePriceMax,
 							highHousePriceEditText.getText().toString(),
 							FilterActivity.this);
-				}else {
+				} else
+				{
 					Setting.saveSetting(Setting.keyHousePriceMax,
-							Setting.initialHousePriceMax,
-							FilterActivity.this);
+							Setting.initialHousePriceMax, FilterActivity.this);
 				}
 
 				// ground type
@@ -311,7 +315,8 @@ public class FilterActivity extends SherlockFragmentActivity
 				// min square price
 				if (areaMinEditText.getText().toString().equals(""))
 				{
-					Setting.saveSetting(Setting.keyAreaMin, Setting.initialAreaMin, FilterActivity.this);
+					Setting.saveSetting(Setting.keyAreaMin,
+							Setting.initialAreaMin, FilterActivity.this);
 				} else
 				{
 					Setting.saveSetting(Setting.keyAreaMin, areaMinEditText
@@ -321,7 +326,8 @@ public class FilterActivity extends SherlockFragmentActivity
 				// max square price
 				if (areaMaxEditText.getText().toString().equals(""))
 				{
-					Setting.saveSetting(Setting.keyAreaMin, Setting.initialAreaMax, FilterActivity.this);
+					Setting.saveSetting(Setting.keyAreaMin,
+							Setting.initialAreaMax, FilterActivity.this);
 				} else
 				{
 					Setting.saveSetting(Setting.keyAreaMax, areaMaxEditText
@@ -355,13 +361,13 @@ public class FilterActivity extends SherlockFragmentActivity
 		building_type_j = (CheckBox) findViewById(R.id.building_type_j);
 		building_type_k = (CheckBox) findViewById(R.id.building_type_k);
 		building_type_l = (CheckBox) findViewById(R.id.building_type_l);
-		
+
 		setCheckAllGroundType(ground_type_1);
 		setCheckAllGroundType(ground_type_2);
 		setCheckAllGroundType(ground_type_3);
 		setCheckAllGroundType(ground_type_4);
 		setCheckAllGroundType(ground_type_5);
-		
+
 		areaMinEditText = (EditText) findViewById(R.id.area_min);
 		areaMaxEditText = (EditText) findViewById(R.id.area_max);
 
@@ -447,7 +453,7 @@ public class FilterActivity extends SherlockFragmentActivity
 
 			}
 		});
-		
+
 		setCheckAllGroundType(ground_type_1);
 		setCheckAllGroundType(ground_type_2);
 		setCheckAllGroundType(ground_type_3);
@@ -485,7 +491,7 @@ public class FilterActivity extends SherlockFragmentActivity
 			setChecked(stringBuildingType, building_type_k, "k");
 			setChecked(stringBuildingType, building_type_l, "l");
 		}
-		
+
 		setCheckAllBuildingType(building_type_a);
 		setCheckAllBuildingType(building_type_b);
 		setCheckAllBuildingType(building_type_c);
@@ -553,56 +559,74 @@ public class FilterActivity extends SherlockFragmentActivity
 		{
 			areaMaxEditText.setText(areaMaxString);
 		}
-		
+
 		CallAds();
 
 	}
-	
+
 	private void setCheckAllBuildingType(CheckBox building_type)
 	{
 		building_type.setOnCheckedChangeListener(new OnCheckedChangeListener()
 		{
-			
+
 			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked)
 			{
 				if (isChecked)
 				{
-					if (building_type_a.isChecked()&&building_type_b.isChecked()&&building_type_c.isChecked()&&building_type_d.isChecked()&&building_type_e.isChecked()&&building_type_f.isChecked()&&building_type_g.isChecked()&&building_type_h.isChecked()&&building_type_i.isChecked()&&building_type_j.isChecked()&&building_type_k.isChecked()&&building_type_l.isChecked())
+					if (building_type_a.isChecked()
+							&& building_type_b.isChecked()
+							&& building_type_c.isChecked()
+							&& building_type_d.isChecked()
+							&& building_type_e.isChecked()
+							&& building_type_f.isChecked()
+							&& building_type_g.isChecked()
+							&& building_type_h.isChecked()
+							&& building_type_i.isChecked()
+							&& building_type_j.isChecked()
+							&& building_type_k.isChecked()
+							&& building_type_l.isChecked())
 					{
 						building_type_0.setChecked(true);
 					}
-					
-				}else {
+
+				} else
+				{
 					building_type_0.setChecked(false);
 				}
-				
+
 			}
 		});
-		
+
 	}
 
 	private void setCheckAllGroundType(CheckBox ground_type)
 	{
 		ground_type.setOnCheckedChangeListener(new OnCheckedChangeListener()
 		{
-			
+
 			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked)
 			{
 				if (isChecked)
 				{
-					if (ground_type_1.isChecked()&&ground_type_2.isChecked()&&ground_type_3.isChecked()&&ground_type_4.isChecked()&&ground_type_5.isChecked())
+					if (ground_type_1.isChecked() && ground_type_2.isChecked()
+							&& ground_type_3.isChecked()
+							&& ground_type_4.isChecked()
+							&& ground_type_5.isChecked())
 					{
-						ground_type_0.setChecked(true);			
+						ground_type_0.setChecked(true);
 					}
-				}else {
+				} else
+				{
 					ground_type_0.setChecked(false);
 				}
-				
+
 			}
 		});
-		
+
 	}
 
 	private void setChecked(String content, CheckBox theCheckBox, String theKey)
@@ -649,47 +673,53 @@ public class FilterActivity extends SherlockFragmentActivity
 		super.onResume();
 		// hideSoftKeyboard();
 	}
-	
+
 	@Override
 	public void onBackPressed()
 	{
 		// TODO Auto-generated method stub
 		super.onBackPressed();
-//		MainActivity.isReSearch = true;
+		// MainActivity.isReSearch = true;
 	}
-	
+
 	private void CallAds()
 	{
+		boolean isGivenStar = Setting.getBooleanSetting(Setting.KeyGiveStar, FilterActivity.this);
 
-		adBannerLayout = (RelativeLayout) findViewById(R.id.adLayout);
-		final AdRequest adReq = new AdRequest.Builder().build();
-
-		// 12-18 17:01:12.438: I/Ads(8252): Use
-		// AdRequest.Builder.addTestDevice("A25819A64B56C65500038B8A9E7C19DD")
-		// to get test ads on this device.
-
-		adMobAdView = new AdView(FilterActivity.this);
-		adMobAdView.setAdSize(AdSize.SMART_BANNER);
-		adMobAdView.setAdUnitId(AppConstants.MEDIATION_KEY);
-
-		adMobAdView.loadAd(adReq);
-		adMobAdView.setAdListener(new AdListener()
+		if (!isGivenStar)
 		{
-			@Override
-			public void onAdLoaded() {
-				adBannerLayout.setVisibility(View.VISIBLE);
-				if (adBannerLayout.getChildAt(0)!=null)
+			adBannerLayout = (RelativeLayout) findViewById(R.id.adLayout);
+			final AdRequest adReq = new AdRequest.Builder().build();
+
+			// 12-18 17:01:12.438: I/Ads(8252): Use
+			// AdRequest.Builder.addTestDevice("A25819A64B56C65500038B8A9E7C19DD")
+			// to get test ads on this device.
+
+			adMobAdView = new AdView(FilterActivity.this);
+			adMobAdView.setAdSize(AdSize.SMART_BANNER);
+			adMobAdView.setAdUnitId(AppConstants.MEDIATION_KEY);
+
+			adMobAdView.loadAd(adReq);
+			adMobAdView.setAdListener(new AdListener()
+			{
+				@Override
+				public void onAdLoaded()
 				{
-					adBannerLayout.removeViewAt(0);
+					adBannerLayout.setVisibility(View.VISIBLE);
+					if (adBannerLayout.getChildAt(0) != null)
+					{
+						adBannerLayout.removeViewAt(0);
+					}
+					adBannerLayout.addView(adMobAdView);
 				}
-				adBannerLayout.addView(adMobAdView);
-			}
-			
-			public void onAdFailedToLoad(int errorCode) {
-				adBannerLayout.setVisibility(View.GONE);
-			}
-			
-		});	
+
+				public void onAdFailedToLoad(int errorCode)
+				{
+					adBannerLayout.setVisibility(View.GONE);
+				}
+
+			});
+		}
 	}
-	
+
 }

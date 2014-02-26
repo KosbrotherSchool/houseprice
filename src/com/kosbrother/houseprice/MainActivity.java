@@ -53,8 +53,6 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.common.data.f;
-import com.google.android.gms.internal.el;
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -100,15 +98,9 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 	private LocationClient mLocationClient;
 
-	private int crawlDateNum = 10211;
+	private int crawlDateNum;
 
 	public static boolean isReSearch = true;
-	// public static String hpMinString;
-	// public static String hpMaxString;
-	// public static String areaMinString;
-	// public static String areaMaxString;
-	// public static String groundTypeString;
-	// public static String buildingTypeString;
 
 	private ImageButton btnFocusButton;
 	private LinearLayout linearTitleLayout;
@@ -128,8 +120,10 @@ public class MainActivity extends SherlockFragmentActivity implements
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
 		km_dis = Double
 				.valueOf(Setting.getSetting(Setting.keyKmDistance, this));
+		crawlDateNum = Setting.getCurrentDateNum(this);
 
 		inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
 
@@ -536,13 +530,19 @@ public class MainActivity extends SherlockFragmentActivity implements
 		case R.id.action_share:
 			Intent intent2 = new Intent(Intent.ACTION_SEND);
 			intent2.setType("text/plain");
-			intent2.putExtra(Intent.EXTRA_TEXT, "DownLoad Url");
+			intent2.putExtra(Intent.EXTRA_TEXT,
+					"看屋高手 https://play.google.com/store/apps/details?id=com.kosbrother.houseprice");
 			startActivity(Intent.createChooser(intent2, "Share..."));
 			break;
 		case R.id.action_star:
-			Uri uri = Uri.parse("https://play.google.com/store/apps/details?id=com.kosbrother.realestate");
+			Uri uri = Uri
+					.parse("https://play.google.com/store/apps/details?id=com.kosbrother.houseprice");
 			Intent it = new Intent(Intent.ACTION_VIEW, uri);
 			startActivity(it);
+			Setting.saveBooleanSetting(Setting.KeyGiveStar, true,
+					MainActivity.this);
+			Setting.saveBooleanSetting(Setting.KeyPushStarDialog, false,
+					MainActivity.this);
 			break;
 		}
 
@@ -667,7 +667,12 @@ public class MainActivity extends SherlockFragmentActivity implements
 		protected Void doInBackground(Void... arg0)
 		{
 			// TODO Auto-generated method stub
-			crawlDateNum = HouseApi.getCurrentCrawlDate();
+			int currentDate = HouseApi.getCurrentCrawlDate();
+			if (!(currentDate == 0))
+			{
+				crawlDateNum = currentDate;
+				Setting.setCurrentDateNum(MainActivity.this, crawlDateNum);
+			}
 
 			return null;
 		}
@@ -678,6 +683,14 @@ public class MainActivity extends SherlockFragmentActivity implements
 			// Toast.makeText(MainActivity.this, Integer.toString(crawlDateNum),
 			// Toast.LENGTH_SHORT).show();
 			makeArrayKey(crawlDateNum);
+
+			String dataString = Datas.getKeyByPosition(mPager.getCurrentItem())
+					.substring(0, 3)
+					+ "/"
+					+ Datas.getKeyByPosition(mPager.getCurrentItem())
+							.substring(3);
+			textYearMonth.setText(dataString);
+
 			if (!isEstatesTaskRunning)
 			{
 				getLocation(true, 0);
@@ -1173,13 +1186,70 @@ public class MainActivity extends SherlockFragmentActivity implements
 		// // After disconnect() is called, the client is considered "dead".
 		mLocationClient.disconnect();
 	}
-	
+
 	@Override
 	public void onBackPressed()
 	{
-		// TODO Auto-generated method stub
-		super.onBackPressed();
-		isReSearch = true;
+		boolean isShowGiveStarDialog = Setting.getBooleanSetting(
+				Setting.KeyPushStarDialog, MainActivity.this);
+		if (isShowGiveStarDialog)
+		{
+			AlertDialog.Builder dialog = new AlertDialog.Builder(
+					MainActivity.this);
+
+			dialog.setTitle("給星星");
+			dialog.setMessage("您的五星評價是加速我們改進產品的動力，針對早期用戶, 我們會拿去廣告回饋喔~");
+			dialog.setPositiveButton("給星星",
+					new DialogInterface.OnClickListener()
+					{
+						public void onClick(DialogInterface dialoginterface,
+								int i)
+						{
+							Uri uri = Uri
+									.parse("https://play.google.com/store/apps/details?id=com.kosbrother.houseprice");
+							Intent it = new Intent(Intent.ACTION_VIEW, uri);
+							startActivity(it);
+							Setting.saveBooleanSetting(Setting.KeyGiveStar,
+									true, MainActivity.this);
+							Setting.saveBooleanSetting(
+									Setting.KeyPushStarDialog, false,
+									MainActivity.this);
+						}
+					});
+			dialog.setNeutralButton("稍後提醒",
+					new DialogInterface.OnClickListener()
+					{
+						public void onClick(DialogInterface dialoginterface,
+								int i)
+						{
+							// do nothing
+							finish();
+							isReSearch = true;
+						}
+					});
+
+			dialog.setNegativeButton("不再提醒",
+					new DialogInterface.OnClickListener()
+					{
+						public void onClick(DialogInterface dialoginterface,
+								int i)
+						{
+							Setting.saveBooleanSetting(
+									Setting.KeyPushStarDialog, false,
+									MainActivity.this);
+							finish();
+							isReSearch = true;
+						}
+					});
+
+			dialog.show();
+
+		} else
+		{
+			super.onBackPressed();
+			isReSearch = true;
+		}
+
 	}
 
 	private void stopPeriodicUpdates()

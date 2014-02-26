@@ -27,10 +27,10 @@ public class DetailActivity extends SherlockFragmentActivity
 	ViewPager mPager;
 	private ActionBar mActionBar;
 	private String mMonthKey;
-	
+
 	private RelativeLayout adBannerLayout;
 	private AdView adMobAdView;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -39,7 +39,7 @@ public class DetailActivity extends SherlockFragmentActivity
 		Bundle bundle = getIntent().getExtras();
 		int position = bundle.getInt("RowNumber");
 		mMonthKey = bundle.getString("MonthKey");
-		
+
 		NUM_ITEMS = Datas.mEstatesMap.get(mMonthKey).size();
 
 		mAdapter = new MyAdapter(getSupportFragmentManager());
@@ -54,7 +54,7 @@ public class DetailActivity extends SherlockFragmentActivity
 		// enable ActionBar app icon to behave as action to toggle nav drawer
 		mActionBar.setDisplayHomeAsUpEnabled(true);
 		mActionBar.setHomeButtonEnabled(true);
-		mActionBar.setTitle("第" + Integer.toString(position+1) + "/"
+		mActionBar.setTitle("第" + Integer.toString(position + 1) + "/"
 				+ Integer.toString(NUM_ITEMS) + "筆資料");
 
 		mPager.setOnPageChangeListener(new OnPageChangeListener()
@@ -64,8 +64,10 @@ public class DetailActivity extends SherlockFragmentActivity
 			public void onPageSelected(int current_position)
 			{
 				// TODO Auto-generated method stub
-				Log.i("DetailActivity", "current_position = " + current_position);
-				mActionBar.setTitle("第" + Integer.toString(current_position + 1) + "/"
+				Log.i("DetailActivity", "current_position = "
+						+ current_position);
+				mActionBar.setTitle("第"
+						+ Integer.toString(current_position + 1) + "/"
 						+ Integer.toString(NUM_ITEMS) + "筆資料");
 			}
 
@@ -83,7 +85,7 @@ public class DetailActivity extends SherlockFragmentActivity
 
 			}
 		});
-		
+
 		CallAds();
 	}
 
@@ -103,7 +105,8 @@ public class DetailActivity extends SherlockFragmentActivity
 		@Override
 		public Fragment getItem(int position)
 		{
-			return DetailFragment.newInstance(position, mMonthKey ,DetailActivity.this);
+			return DetailFragment.newInstance(position, mMonthKey,
+					DetailActivity.this);
 		}
 	}
 
@@ -111,9 +114,9 @@ public class DetailActivity extends SherlockFragmentActivity
 	protected void onDestroy()
 	{
 		super.onDestroy();
-		
+
 	}
-	
+
 	@Override
 	public void onBackPressed()
 	{
@@ -130,14 +133,14 @@ public class DetailActivity extends SherlockFragmentActivity
 	 * You'll need this in your class to get the helper from the manager once
 	 * per class.
 	 */
-//	public DatabaseHelper getHelper()
-//	{
-//		if (databaseHelper == null)
-//		{
-//			databaseHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
-//		}
-//		return databaseHelper;
-//	}
+	// public DatabaseHelper getHelper()
+	// {
+	// if (databaseHelper == null)
+	// {
+	// databaseHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
+	// }
+	// return databaseHelper;
+	// }
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
@@ -153,18 +156,20 @@ public class DetailActivity extends SherlockFragmentActivity
 			MainActivity.isReSearch = false;
 			return true;
 		case R.id.menu_up:
-			if (mPager.getCurrentItem()>0)
+			if (mPager.getCurrentItem() > 0)
 			{
-				mPager.setCurrentItem(mPager.getCurrentItem()-1);
-			}else{
-				mPager.setCurrentItem(NUM_ITEMS-1);
-			}	
+				mPager.setCurrentItem(mPager.getCurrentItem() - 1);
+			} else
+			{
+				mPager.setCurrentItem(NUM_ITEMS - 1);
+			}
 			return true;
 		case R.id.menu_down:
-			if (mPager.getCurrentItem() < NUM_ITEMS-1)
+			if (mPager.getCurrentItem() < NUM_ITEMS - 1)
 			{
-				mPager.setCurrentItem(mPager.getCurrentItem()+1);
-			}else {
+				mPager.setCurrentItem(mPager.getCurrentItem() + 1);
+			} else
+			{
 				mPager.setCurrentItem(0);
 			}
 			return true;
@@ -183,13 +188,14 @@ public class DetailActivity extends SherlockFragmentActivity
 
 		return super.onCreateOptionsMenu(menu);
 	}
-	
+
 	@Override
 	public void onStart()
 	{
 		super.onStart();
 		// The rest of your onStart() code.
-//		EasyTracker.getInstance(this).activityStart(this); // Add this method.
+		// EasyTracker.getInstance(this).activityStart(this); // Add this
+		// method.
 	}
 
 	@Override
@@ -197,41 +203,47 @@ public class DetailActivity extends SherlockFragmentActivity
 	{
 		super.onStop();
 		// The rest of your onStop() code.
-//		EasyTracker.getInstance(this).activityStop(this); // Add this method.
+		// EasyTracker.getInstance(this).activityStop(this); // Add this method.
 	}
-	
+
 	private void CallAds()
 	{
+		boolean isGivenStar = Setting.getBooleanSetting(Setting.KeyGiveStar, DetailActivity.this);
 
-		adBannerLayout = (RelativeLayout) findViewById(R.id.adLayout);
-		final AdRequest adReq = new AdRequest.Builder().build();
-
-		// 12-18 17:01:12.438: I/Ads(8252): Use
-		// AdRequest.Builder.addTestDevice("A25819A64B56C65500038B8A9E7C19DD")
-		// to get test ads on this device.
-
-		adMobAdView = new AdView(DetailActivity.this);
-		adMobAdView.setAdSize(AdSize.SMART_BANNER);
-		adMobAdView.setAdUnitId(AppConstants.MEDIATION_KEY);
-
-		adMobAdView.loadAd(adReq);
-		adMobAdView.setAdListener(new AdListener()
+		if (!isGivenStar)
 		{
-			@Override
-			public void onAdLoaded() {
-				adBannerLayout.setVisibility(View.VISIBLE);
-				if (adBannerLayout.getChildAt(0)!=null)
+			adBannerLayout = (RelativeLayout) findViewById(R.id.adLayout);
+			final AdRequest adReq = new AdRequest.Builder().build();
+
+			// 12-18 17:01:12.438: I/Ads(8252): Use
+			// AdRequest.Builder.addTestDevice("A25819A64B56C65500038B8A9E7C19DD")
+			// to get test ads on this device.
+
+			adMobAdView = new AdView(DetailActivity.this);
+			adMobAdView.setAdSize(AdSize.SMART_BANNER);
+			adMobAdView.setAdUnitId(AppConstants.MEDIATION_KEY);
+
+			adMobAdView.loadAd(adReq);
+			adMobAdView.setAdListener(new AdListener()
+			{
+				@Override
+				public void onAdLoaded()
 				{
-					adBannerLayout.removeViewAt(0);
+					adBannerLayout.setVisibility(View.VISIBLE);
+					if (adBannerLayout.getChildAt(0) != null)
+					{
+						adBannerLayout.removeViewAt(0);
+					}
+					adBannerLayout.addView(adMobAdView);
 				}
-				adBannerLayout.addView(adMobAdView);
-			}
-			
-			public void onAdFailedToLoad(int errorCode) {
-				adBannerLayout.setVisibility(View.GONE);
-			}
-			
-		});	
+
+				public void onAdFailedToLoad(int errorCode)
+				{
+					adBannerLayout.setVisibility(View.GONE);
+				}
+
+			});
+		}
 	}
-	
+
 }
