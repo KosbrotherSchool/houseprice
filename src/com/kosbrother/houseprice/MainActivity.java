@@ -996,7 +996,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 							.getCurrentItem());
 					intent.putExtra("MonthKey", monthKey);
 					intent.putExtra("RowNumber",
-							Integer.valueOf(marker.getTitle()));
+							Integer.valueOf(marker.getTitle().trim()));
 					intent.setClass(MainActivity.this, DetailActivity.class);
 					startActivity(intent);
 					return true;
