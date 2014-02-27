@@ -6,6 +6,7 @@ import java.util.TreeMap;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -534,6 +535,10 @@ public class MainActivity extends SherlockFragmentActivity implements
 					"看屋高手 https://play.google.com/store/apps/details?id=com.kosbrother.houseprice");
 			startActivity(Intent.createChooser(intent2, "Share..."));
 			break;
+		case R.id.action_fans_page:
+			Intent it2 = getOpenFacebookIntent(MainActivity.this);
+			startActivity(it2);
+			break;
 		case R.id.action_star:
 			Uri uri = Uri
 					.parse("https://play.google.com/store/apps/details?id=com.kosbrother.houseprice");
@@ -547,6 +552,22 @@ public class MainActivity extends SherlockFragmentActivity implements
 		}
 
 		return super.onOptionsItemSelected(item);
+	}
+
+	public static Intent getOpenFacebookIntent(Context context)
+	{
+
+		try
+		{
+			context.getPackageManager()
+					.getPackageInfo("com.facebook.katana", 0);
+			return new Intent(Intent.ACTION_VIEW,
+					Uri.parse("fb://page/646170208783726"));
+		} catch (Exception e)
+		{
+			return new Intent(Intent.ACTION_VIEW,
+					Uri.parse("https://touch.facebook.com/housewoo"));
+		}
 	}
 
 	@Override

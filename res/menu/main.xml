@@ -18,9 +18,14 @@
         android:title="分享"/>
     
     <item
+        android:id="@+id/action_fans_page"
+        android:showAsAction="never"
+        android:title="FB粉絲頁"/>
+    
+    <item
         android:id="@+id/action_star"
-        android:orderInCategory="100"
         android:showAsAction="never"
         android:title="給評(星星)"/>
+    
 
 </menu>
