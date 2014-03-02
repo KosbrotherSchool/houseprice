@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ActivityManager.MemoryInfo;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -115,6 +117,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private ArrayList<MarkerOptions> mMarkers = new ArrayList<MarkerOptions>();
 
 	private float mapSize;
+	private int memorySize = 256;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -260,8 +263,15 @@ public class MainActivity extends SherlockFragmentActivity implements
 							+ Datas.getKeyByPosition(position).substring(3);
 					textYearMonth.setText(dataString);
 
-					// setMapMark(position);
-					new addMarkerTask().execute();
+					if (getCurrentMemory() > memorySize)
+					{
+						new addMarkerTask().execute();
+					} else
+					{
+						mGoogleMap.clear();
+						addCurrentLocationMarker();
+						addMarkerNoPrice();		
+					}
 					BreiefFragment theBreiefFragment = mAdapter
 							.getCurrBreiefFragment(position);
 					theBreiefFragment.setBriefViews();
@@ -300,7 +310,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 				{
 					mPager.setCurrentItem(mPager.getCurrentItem() - 1);
 					// setMapMark(mPager.getCurrentItem());
-					new addMarkerTask().execute();
+					// new addMarkerTask().execute();
 				}
 			}
 		});
@@ -319,8 +329,13 @@ public class MainActivity extends SherlockFragmentActivity implements
 				} else
 				{
 					mPager.setCurrentItem(mPager.getCurrentItem() + 1);
-					// setMapMark(mPager.getCurrentItem());
-					new addMarkerTask().execute();
+					// if (getCurrentMemory() > memorySize)
+					// {
+					// new addMarkerTask().execute();
+					// } else
+					// {
+					// addMarkerNoPrice();
+					// }
 				}
 
 			}
@@ -829,8 +844,16 @@ public class MainActivity extends SherlockFragmentActivity implements
 
 				Datas.mEstatesMap = getRealEstatesMap(Datas.mEstates);
 
-				// setMapMark(mPager.getCurrentItem());
-				new addMarkerTask().execute();
+				if (getCurrentMemory() > memorySize)
+				{
+					new addMarkerTask().execute();
+				} else
+				{	
+					mGoogleMap.clear();
+					addCurrentLocationMarker();
+					addMarkerNoPrice();				
+				}
+
 				BreiefFragment theBreiefFragment = mAdapter
 						.getCurrBreiefFragment(mPager.getCurrentItem());
 				theBreiefFragment.setBriefViews();
@@ -846,6 +869,28 @@ public class MainActivity extends SherlockFragmentActivity implements
 				theBreiefFragment.setBriefViews();
 			}
 
+		}
+	}
+
+	private void addMarkerNoPrice()
+	{
+		String monthKey = Datas.getKeyByPosition(mPager.getCurrentItem());
+		ArrayList<RealEstate> theEstates = new ArrayList<RealEstate>();
+		theEstates = Datas.mEstatesMap.get(monthKey);
+
+		if (theEstates != null)
+		{
+			for (int i = 0; i < theEstates.size(); i++)
+			{
+				LatLng newLatLng = new LatLng(theEstates.get(i).y_lat,
+						theEstates.get(i).x_long);
+				MarkerOptions marker = new MarkerOptions().position(newLatLng)
+						.title(Integer.toString(i));
+				marker.icon(BitmapDescriptorFactory
+						.fromResource(R.drawable.marker_sale));
+				mGoogleMap.addMarker(marker);
+
+			}
 		}
 	}
 
@@ -1426,6 +1471,15 @@ public class MainActivity extends SherlockFragmentActivity implements
 			}
 
 		});
+	}
+
+	private Long getCurrentMemory()
+	{
+		MemoryInfo mi = new MemoryInfo();
+		ActivityManager activityManager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+		activityManager.getMemoryInfo(mi);
+		long availableMegs = mi.availMem / 1048576L;
+		return availableMegs;
 	}
 
 }
