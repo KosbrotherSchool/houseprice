@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.TreeMap;
 
 import android.app.ActivityManager;
+import android.app.ActivityManager.MemoryInfo;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ActivityManager.MemoryInfo;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -60,6 +60,7 @@ import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -76,7 +77,7 @@ import com.kosbrother.houseprice.fragment.TransparentSupportMapFragment;
 
 public class MainActivity extends SherlockFragmentActivity implements
 		LocationListener, GooglePlayServicesClient.ConnectionCallbacks,
-		GooglePlayServicesClient.OnConnectionFailedListener
+		GooglePlayServicesClient.OnConnectionFailedListener,OnMapClickListener
 {
 
 	private GoogleMap mGoogleMap;
@@ -506,7 +507,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 					.findFragmentById(R.id.map)).getMap();
 
 			// mGoogleMap.setMyLocationEnabled(true);
-
+			mGoogleMap.setOnMapClickListener(this);
+			
 			mGoogleMap
 					.setOnMyLocationButtonClickListener(new OnMyLocationButtonClickListener()
 					{
@@ -1480,6 +1482,16 @@ public class MainActivity extends SherlockFragmentActivity implements
 		activityManager.getMemoryInfo(mi);
 		long availableMegs = mi.availMem / 1048576L;
 		return availableMegs;
+	}
+	
+	@Override
+	public void onMapClick(LatLng arg0)
+	{
+//		mGoogleMap.animateCamera(CameraUpdateFactory.newLatLng(arg0));
+		AppConstants.currentLatLng = arg0;
+		mGoogleMap.clear();
+		addCurrentLocationMarker();
+		getLocation(false, 1);
 	}
 
 }
