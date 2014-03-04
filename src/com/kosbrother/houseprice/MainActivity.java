@@ -1059,12 +1059,27 @@ public class MainActivity extends SherlockFragmentActivity implements
 				@Override
 				public boolean onMarkerClick(Marker marker)
 				{
+					if (marker == null || marker.getTitle() == null)
+					{
+//						Toast.makeText(MainActivity.this, "marker null", Toast.LENGTH_SHORT).show();
+						return true;
+					}
+					
 					Intent intent = new Intent();
 					String monthKey = Datas.getKeyByPosition(mPager
 							.getCurrentItem());
 					intent.putExtra("MonthKey", monthKey);
-					intent.putExtra("RowNumber",
-							Integer.valueOf(marker.getTitle().trim()));
+					try
+					{
+						Log.i("RowNumber", marker.getTitle().trim());
+						intent.putExtra("RowNumber",
+								Integer.valueOf(marker.getTitle().trim()));
+					} catch (Exception e)
+					{
+//						Toast.makeText(MainActivity.this, "marker error", Toast.LENGTH_SHORT).show();
+						intent.putExtra("RowNumber", 1);
+					}					
+					
 					intent.setClass(MainActivity.this, DetailActivity.class);
 					startActivity(intent);
 					return true;
